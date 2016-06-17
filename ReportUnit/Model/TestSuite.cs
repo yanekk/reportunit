@@ -24,6 +24,7 @@ namespace ReportUnit.Model
         /// Error or other status messages
         /// </summary>
         public string StatusMessage { get; set; }
+        public string StackTrace { get; set; }
 
         public string StartTime { get; set; }
 

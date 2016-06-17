@@ -32,8 +32,9 @@ namespace ReportUnit.Templates
                     <meta name='description' content=''>
                     <meta name='author' content=''>
                     <title>ReportUnit TestRunner Report</title>
+                    <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet' type='text/css'>
                     <link href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.2/css/materialize.min.css' rel='stylesheet' type='text/css'>
-                    <link href='https://cdn.rawgit.com/reportunit/reportunit/005dcf934c5a53e60b9ec88a2a118930b433c453/cdn/reportunit.css' type='text/css' rel='stylesheet' />
+                    <link href='./assets/reportunit.css' type='text/css' rel='stylesheet' />
                     
                 </head>
                 <body>
@@ -91,7 +92,7 @@ namespace ReportUnit.Templates
                                     <div class='card-panel'>
                                         <div alt='Count of all passed tests' title='Count of all passed tests'>Suite Summary</div>    
                                         <div class='chart-box'>
-                                            <canvas class='text-centered' id='suite-analysis'></canvas>
+                                            <div class='text-centered' id='suite-analysis'></div>
                                         </div>
                                         <div>
                                             <span class='weight-light'><span class='suite-pass-count weight-normal'></span> suites(s) passed</span>
@@ -105,7 +106,7 @@ namespace ReportUnit.Templates
                                     <div class='card-panel'>
                                         <div alt='Count of all failed tests' title='Count of all failed tests'>Tests Summary</div>
                                         <div class='chart-box'>
-                                            <canvas class='text-centered' id='test-analysis'></canvas>
+                                            <div class='text-centered' id='test-analysis'></div>
                                         </div>
                                         <div>
                                             <span class='weight-light'><span class='test-pass-count weight-normal'>@Model.Passed</span> test(s) passed</span>
@@ -172,6 +173,9 @@ namespace ReportUnit.Templates
                                                 <div> 
                                                     <a title='Enable Dashboard' alt='Enable Dashboard' id='enableDashboard' class='enabled'><i class='mdi-action-track-changes icon active'></i></a> 
                                                 </div>
+                                                <div>
+                                                    <input type='text' id='nameFilterInput' placeholder='Search...'/>
+                                                </div>
                                             </div>
                                             <ul id='suite-collection' class='no-margin-v'>
                                                 @for (var ix = 0; ix < Model.TestSuiteList.Count; ix++)
@@ -202,14 +206,7 @@ namespace ReportUnit.Templates
                                                                     <tr>
                                                                         <th>TestName</th>
                                                                         <th>Status</th>
-                                                                        @if (Model.TestSuiteList.Count > 0 && Model.TestSuiteList[ix].TestList.Any(x => x.CategoryList.Count > 0))
-                                                                        {
-                                                                            <th>Category</th>
-                                                                        }
-                                                                        @if (Model.TestSuiteList.Count > 0 && Model.TestSuiteList[ix].TestList.Where(x => !String.IsNullOrEmpty(x.Description) || !String.IsNullOrEmpty(x.StatusMessage)).Count() > 0) 
-                                                                        {
-                                                                            <th>StatusMessage</th>
-                                                                        }
+                                                                        <th>Category</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -245,23 +242,13 @@ namespace ReportUnit.Templates
                                                                                     }
                                                                                 </td>
                                                                             }
-                                                                            @if (Model.TestSuiteList.Count > 0 && Model.TestSuiteList[ix].TestList.Where(x => !String.IsNullOrEmpty(x.StatusMessage)).Count() > 0) 
-                                                                            {
-                                                                                if (!String.IsNullOrEmpty(@test.StatusMessage)) 
-                                                                                {
-                                                                                    <td>
-                                                                                    
-                                                                                        <div class='badge showStatusMessage error'><i class='mdi-alert-warning'></i></div>
-                                                                                        <pre class='hide'>@test.StatusMessage.Replace(""<"", ""&lt;"").Replace("">"", ""&gt;"")</pre>
-                                                                                    </td>
-                                                                                }
-                                                                                else 
-                                                                                {
-                                                                                    <td class='grey lighten-4'></td>
-                                                                                }
-                                                                            }
                                                                             <td class='test-features hide @test.GetCategories()'></td>
                                                                         </tr>
+                                                                        if (!String.IsNullOrEmpty(@test.StatusMessage)) {
+                                                                            <tr>
+                                                                                <td colspan='3'><pre>@test.StatusMessage</pre></td>
+                                                                            </tr>
+                                                                        }
                                                                     }
                                                                 </tbody>
                                                             </table>
@@ -327,9 +314,11 @@ namespace ReportUnit.Templates
                     </div>
                 </body>
                 <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js'></script> 
+                <script type='text/javascript' src='https://www.google.com/jsapi'></script>
                 <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.2/js/materialize.min.js'></script> 
                 <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
-                <script src='https://cdn.rawgit.com/reportunit/reportunit/005dcf934c5a53e60b9ec88a2a118930b433c453/cdn/reportunit.js' type='text/javascript'></script>
+
+                <script src='./assets/reportunit.js' type='text/javascript'></script>
 
             </html>
             ".Replace("\r\n", "").Replace("\t", "").Replace("    ", ""); 

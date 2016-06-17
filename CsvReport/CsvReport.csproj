@@ -1,18 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{12B65E5C-465A-4EB5-BCDB-0F79224A9BCF}</ProjectGuid>
+    <ProjectGuid>{F33BD05A-8FDB-4ACC-BE3F-5703FD1FE7DC}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReportUnit</RootNamespace>
-    <AssemblyName>ReportUnit</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>CsvReport</RootNamespace>
+    <AssemblyName>CsvReport</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,60 +33,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RazorEngine">
-      <HintPath>..\packages\RazorEngine.3.7.3\lib\net40\RazorEngine.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web.Razor">
-      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Logging\Level.cs" />
-    <Compile Include="Logging\Log.cs" />
-    <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Model\CompositeTemplate.cs" />
-    <Compile Include="Parser\FocusHelper.cs" />
-    <Compile Include="Parser\Gallio.cs" />
-    <Compile Include="Parser\IParser.cs" />
-    <Compile Include="Parser\MSTest2010.cs" />
-    <Compile Include="Parser\NUnit.cs" />
-    <Compile Include="Parser\ParserFactory.cs" />
-    <Compile Include="Model\Report.cs" />
-    <Compile Include="Model\RunInfo.cs" />
-    <Compile Include="Model\Status.cs" />
-    <Compile Include="Model\Test.cs" />
-    <Compile Include="Model\TestSuite.cs" />
-    <Compile Include="Parser\TestRunner.cs" />
-    <Compile Include="Parser\XUnitV1.cs" />
-    <Compile Include="Parser\XUnitV2.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReportUnitService.cs" />
-    <Compile Include="Templates\File.cs" />
-    <Compile Include="Templates\SideNav.cs" />
-    <Compile Include="Templates\Summary.cs" />
-    <Compile Include="Utils\DateTimeHelper.cs" />
-    <Compile Include="Utils\ReportUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
-    <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\reportunit.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\reportunit.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\ReportUnit\ReportUnit.csproj">
+      <Project>{12b65e5c-465a-4eb5-bcdb-0f79224a9bcf}</Project>
+      <Name>ReportUnit</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

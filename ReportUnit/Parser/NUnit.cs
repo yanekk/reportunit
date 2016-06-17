@@ -17,7 +17,7 @@ using ReportUnit.Logging;
 
 namespace ReportUnit.Parser
 {
-    internal class NUnit : IParser
+    public class NUnit : IParser
     {
         private string resultsFile;
 
@@ -100,7 +100,7 @@ namespace ReportUnit.Parser
             suites.AsParallel().ToList().ForEach(ts =>
             {
                 var testSuite = new TestSuite();
-                testSuite.Name = ts.Attribute("name").Value;
+                testSuite.Name = FocusHelper.ExtractTestMethodName(ts);
 
                 // Suite Time Info
                 testSuite.StartTime = 
@@ -131,8 +131,7 @@ namespace ReportUnit.Parser
                     var stackTrace = failure.Element("stack-trace");
                     if (stackTrace != null && !string.IsNullOrWhiteSpace(stackTrace.Value))
                     {
-                        testSuite.StatusMessage = string.Format(
-                            "{0}\n\nStack trace:\n{1}", testSuite.StatusMessage, stackTrace.Value);
+                        testSuite.StackTrace = stackTrace.Value;
                     }
                 }
 
@@ -144,7 +143,7 @@ namespace ReportUnit.Parser
                 {
                     var test = new Model.Test();
 
-                    test.Name = tc.Attribute("name").Value;
+                    test.Name = FocusHelper.ExtractTestCaseName(tc);
                     test.Status = StatusExtensions.ToStatus(tc.Attribute("result").Value);
                     
                     // main a master list of all status
@@ -195,26 +194,23 @@ namespace ReportUnit.Parser
                     report.CategoryList.AddRange(categories);
 
 
-                    // error and other status messages
-                    test.StatusMessage = 
-                        tc.Element("failure") != null 
-                            ? tc.Element("failure").Element("message").Value.Trim()
-                            : "";
-                    test.StatusMessage += 
-                        tc.Element("failure") != null 
-                            ? tc.Element("failure").Element("stack-trace") != null 
-                                ? tc.Element("failure").Element("stack-trace").Value.Trim()
-                                : "" 
-                            : "";
-
-                    test.StatusMessage += tc.Element("reason") != null && tc.Element("reason").Element("message") != null
-                        ? tc.Element("reason").Element("message").Value.Trim()
-                        : "";
-
                    // add NUnit console output to the status message
-                   test.StatusMessage += tc.Element( "output" ) != null
-                     ? tc.Element( "output" ).Value.Trim()
-                     : "";
+                    if (tc.Element("failure") != null)
+                    {
+                        var failureElement = tc.Element("failure");
+                        test.StatusMessage += failureElement.Element("message") != null
+                          ? failureElement.Descendants("message").First().Value.Trim()
+                          : "";
+
+                        test.StatusMessage += failureElement.Element("stack-trace") != null
+                          ? failureElement.Descendants("stack-trace").First().Value.Trim()
+                          : "";
+                    }
+
+                    if (test.Status == Status.Inconclusive)
+                    {
+                        test.StatusMessage = tc.Element("reason").Element("message").Value;
+                    }
 
                    testSuite.TestList.Add(test);
                 });

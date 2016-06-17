@@ -70,6 +70,19 @@ namespace ReportUnit
                 var html = Engine.Razor.RunCompile(Templates.File.GetSource(), "report", typeof(Model.Report), report, null);
                 File.WriteAllText(Path.Combine(outputDirectory, report.FileName + ".html"), html);
             }
+            CopyAssetFiles(outputDirectory);
+        }
+
+        private void CopyAssetFiles(string outputDirectory)
+        {
+            var targetDirectory = Path.Combine(outputDirectory, "assets");
+            Directory.CreateDirectory(targetDirectory);
+            foreach (var soruceFile in Directory.EnumerateFiles(".\\assets"))
+            {
+                var fileName = Path.GetFileName(soruceFile);
+                var targetFile = Path.Combine(targetDirectory, fileName);
+                File.Copy(soruceFile, targetFile, true);
+            }
         }
 
         private TestRunner GetTestRunner(string inputFile)
