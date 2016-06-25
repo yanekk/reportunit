@@ -57,20 +57,16 @@ namespace ReportUnit
 
             if (compositeTemplate.ReportList.Count > 1)
             {
-                compositeTemplate.SideNavLinks = compositeTemplate.SideNavLinks.Insert(0, Templates.SideNav.IndexLink);
-                SaveTemplate(compositeTemplate,
-                    Path.Combine(outputDirectory, "Index.html"),
-                    "ReportUnit.Templates.Summary.cshtml");
+                var sideNavLink = RazorHelper.GetTemplate("_IndexLink");
+                compositeTemplate.SideNavLinks = compositeTemplate.SideNavLinks.Insert(0, sideNavLink);
+                RazorHelper.SaveTemplate(compositeTemplate, Path.Combine(outputDirectory, "Index.html"), "Summary");
             }
 
 			foreach (var report in compositeTemplate.ReportList)
             {
                 report.SideNavLinks = compositeTemplate.SideNavLinks;
                 CopyArtifacts(outputDirectory, report);
-
-                SaveTemplate(report, 
-                    Path.Combine(outputDirectory, report.FileName + ".html"), 
-                    "ReportUnit.Templates.File.cshtml");          
+                RazorHelper.SaveTemplate(report, Path.Combine(outputDirectory, report.FileName + ".html"), "File");          
             }
             CopyAssetFiles(outputDirectory);
         }
@@ -110,12 +106,7 @@ namespace ReportUnit
             }
         }
 
-        private void SaveTemplate<TModel>(TModel model, string filePath, string templateName)
-        {
-            var template = ResourceHelper.GetStringResource(templateName);
-            var html = Engine.Razor.RunCompile(template, typeof(TModel).Name, typeof(TModel), model);
-            File.WriteAllText(filePath, html);
-        }
+
 
         private TestRunner GetTestRunner(string inputFile)
         {

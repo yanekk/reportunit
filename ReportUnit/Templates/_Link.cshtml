@@ -1,0 +1,8 @@
+﻿@using RazorEngine.Templating;
+@inherits TemplateBase<ReportUnit.Model.Report>
+<li class='waves-effect report-item'>
+    <a href='./@(Model.FileName).html'>
+        <i class='mdi-action-assignment'></i>
+        <span class='sidenav-filename'>@Model.FileName</span>
+    </a>
+</li>

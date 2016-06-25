@@ -85,8 +85,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportUnitService.cs" />
-    <Compile Include="Templates\SideNav.cs" />
     <Compile Include="Utils\DateTimeHelper.cs" />
+    <Compile Include="Utils\RazorHelper.cs" />
     <Compile Include="Utils\ReportUtil.cs" />
     <Compile Include="Utils\ResourceHelper.cs" />
     <Compile Include="Utils\XmlExtensions.cs" />
@@ -97,6 +97,7 @@
     <None Include="Readme.md" />
     <EmbeddedResource Include="Templates\File.cshtml" />
     <EmbeddedResource Include="Templates\Summary.cshtml" />
+    <EmbeddedResource Include="Templates\_Link.cshtml" />
     <None Include="Templates\Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +107,7 @@
     <Content Include="assets\reportunit.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Templates\_IndexLink.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
