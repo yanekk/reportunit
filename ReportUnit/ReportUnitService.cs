@@ -66,11 +66,35 @@ namespace ReportUnit
 			foreach (var report in compositeTemplate.ReportList)
             {
                 report.SideNavLinks = compositeTemplate.SideNavLinks;
+                CopyArtifacts(outputDirectory, report);
 
                 var html = Engine.Razor.RunCompile(Templates.File.GetSource(), "report", typeof(Model.Report), report, null);
-                File.WriteAllText(Path.Combine(outputDirectory, report.FileName + ".html"), html);
+                File.WriteAllText(Path.Combine(outputDirectory, report.FileName + ".html"), html);                
             }
             CopyAssetFiles(outputDirectory);
+        }
+
+        private void CopyArtifacts(string outputDirectory, Report report)
+        {
+            var allTests = report.TestSuiteList.SelectMany(suite => suite.TestList);
+            var testsWithArtifacts = allTests.Where(t => t.HasArtifacts());
+            if (!testsWithArtifacts.Any())
+                return;
+
+            var artifactBaseDirectory = Path.Combine("Artifacts\\", report.FileName);
+            Directory.CreateDirectory(Path.Combine(outputDirectory, artifactBaseDirectory));
+            foreach(var test in testsWithArtifacts)
+            {
+                var artifactPath = Path.Combine(artifactBaseDirectory, test.ArtifactSet.DirectoryName);
+                Directory.CreateDirectory(Path.Combine(outputDirectory, artifactPath));
+                foreach(var artifact in test.ArtifactSet.Artifacts)
+                {
+                    artifact.FilePath = Path.Combine(artifactPath, artifact.FileName);
+                    File.Copy(
+                        Path.Combine(test.ArtifactSet.BasePath, artifact.FileName), 
+                        Path.Combine(outputDirectory, artifact.FilePath), true);
+                }
+            }
         }
 
         private void CopyAssetFiles(string outputDirectory)

@@ -432,7 +432,19 @@ td > .label {
     color: #00aeef !important;
 	padding: 4px 7px;
 }
-
+.artifact-set * {
+	display: inline;
+	font-size: 14px;
+}
+.artifact-set h2 {
+	font-weight: bold;
+	margin-left: 10px
+}
+.artifact-set ul li::before {
+	width: 5px;
+	height: 5px;
+	border: 1px solid red;
+}
 /* -- [ progress bar ] -- */
 .progress {
     background-color: #49ecff;

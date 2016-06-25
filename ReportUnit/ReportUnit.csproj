@@ -53,6 +53,8 @@
     <Compile Include="Logging\Level.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Model\Artifact.cs" />
+    <Compile Include="Model\ArtifactSet.cs" />
     <Compile Include="Model\CompositeTemplate.cs" />
     <Compile Include="Parser\FocusHelper.cs" />
     <Compile Include="Parser\Gallio.cs" />

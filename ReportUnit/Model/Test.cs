@@ -21,6 +21,11 @@ namespace ReportUnit.Model
         public string EndTime { get; set; }
         public double Duration { get; set; }
 
+        public ArtifactSet ArtifactSet { get; set; }
+        public bool HasArtifacts()
+        {
+            return ArtifactSet != null;
+        }
         /// <summary>
         /// Categories & features associated with the test
         /// </summary>

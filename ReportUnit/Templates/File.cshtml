@@ -215,6 +215,20 @@
                                                                     <tr>
                                                                         <td colspan='3'>
                                                                             <pre style='font-weight: bold'>@test.StatusMessage</pre>
+                                                                            @if (test.ArtifactSet != null)
+                                                                            {
+                                                                                <div class="artifact-set">
+                                                                                    <h2>Artifacts: </h2>
+                                                                                    <ul class="artifact-set">
+                                                                                        @foreach(var artifact in test.ArtifactSet.Artifacts)
+                                                                                        {
+                                                                                            <li>
+                                                                                                <a href="@artifact.FilePath" target="_blank">@artifact.FileName</a>
+                                                                                            </li>
+                                                                                        }
+                                                                                    </ul>
+                                                                                </div>
+                                                                            }
                                                                             @if (!string.IsNullOrEmpty(@test.StackTrace))
                                                                             {
                                                                                 <pre>@test.StackTrace</pre>

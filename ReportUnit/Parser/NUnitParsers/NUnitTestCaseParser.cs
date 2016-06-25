@@ -28,6 +28,8 @@ namespace ReportUnit.Parser.NUnitParsers
             test.StatusMessage = ExtractStatusMessage(testCaseNode);
             test.StackTrace = ExtractStackTrace(testCaseNode);
 
+            test.ArtifactSet = ExtractArtifactSet(testCaseNode);
+
             return test;
         }
 
@@ -79,6 +81,32 @@ namespace ReportUnit.Parser.NUnitParsers
                 return HttpUtility.HtmlEncode(failureElement.GetChildElementValueOrDefault("stack-trace"));
 
             return null;
+        }
+
+        private static ArtifactSet ExtractArtifactSet(XElement testCaseNode)
+        {
+            var propertiesContainer = testCaseNode.Element("properties");
+            if (propertiesContainer == null)
+                return null;
+
+            var artifactSessionFolderNode = propertiesContainer
+                .Elements("property")
+                .SingleOrDefault(element => element.GetAttributeValueOrDefault("name") == "ArtifactSessionFolder");
+            if (artifactSessionFolderNode == null)
+                return null;
+
+            var artifactSessionFolder = artifactSessionFolderNode.GetAttributeValueOrDefault("value");
+            var artifactSet = new ArtifactSet(artifactSessionFolder);
+
+            var artifactNodes = artifactSessionFolderNode
+                .ElementsAfterSelf()
+                .Where(property => property.GetAttributeValueOrDefault("name").StartsWith("Artifact"));
+
+            foreach(var artifactNode in artifactNodes)
+            {
+                artifactSet.Artifacts.Add(new Artifact(artifactNode.GetAttributeValueOrDefault("value")));
+            }
+            return artifactSet;
         }
     }
 }
