@@ -86,6 +86,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Readme.md" />
+    <EmbeddedResource Include="Templates\File.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\reportunit.css">
