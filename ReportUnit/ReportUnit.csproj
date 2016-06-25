@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ReportUnit</RootNamespace>
     <AssemblyName>ReportUnit</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -19,10 +19,11 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,16 +33,23 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RazorEngine">
-      <HintPath>..\packages\RazorEngine.3.7.3\lib\net40\RazorEngine.dll</HintPath>
+    <Reference Include="RazorEngine, Version=3.8.2.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>..\packages\RazorEngine.3.8.2\lib\net45\RazorEngine.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Razor">
-      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
+    <Reference Include="System.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -77,11 +85,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportUnitService.cs" />
-    <Compile Include="Templates\File.cs" />
     <Compile Include="Templates\SideNav.cs" />
     <Compile Include="Templates\Summary.cs" />
     <Compile Include="Utils\DateTimeHelper.cs" />
     <Compile Include="Utils\ReportUtil.cs" />
+    <Compile Include="Utils\ResourceHelper.cs" />
     <Compile Include="Utils\XmlExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +97,7 @@
     <None Include="packages.config" />
     <None Include="Readme.md" />
     <EmbeddedResource Include="Templates\File.cshtml" />
+    <None Include="Templates\Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\reportunit.css">

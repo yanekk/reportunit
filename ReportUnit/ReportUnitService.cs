@@ -13,6 +13,7 @@ using RazorEngine.Text;
 using ReportUnit.Logging;
 using ReportUnit.Model;
 using ReportUnit.Parser;
+using ReportUnit.Utils;
 
 namespace ReportUnit
 {
@@ -68,7 +69,8 @@ namespace ReportUnit
                 report.SideNavLinks = compositeTemplate.SideNavLinks;
                 CopyArtifacts(outputDirectory, report);
 
-                var html = Engine.Razor.RunCompile(Templates.File.GetSource(), "report", typeof(Model.Report), report, null);
+                var template = ResourceHelper.GetStringResource("ReportUnit.Templates.File.cshtml");
+                var html = Engine.Razor.RunCompile(template, "report", typeof(Report), report);
                 File.WriteAllText(Path.Combine(outputDirectory, report.FileName + ".html"), html);                
             }
             CopyAssetFiles(outputDirectory);

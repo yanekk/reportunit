@@ -1,14 +1,14 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace ReportUnit.Templates
+namespace ReportUnit.Utils
 {
-    internal class File
+    public static class ResourceHelper
     {
-        public static string GetSource()
+        public static string GetStringResource(string name)
         {
             var resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-            using (var stream = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("ReportUnit.Templates.File.cshtml")))
+            using (var stream = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(name)))
             {
                 return stream.ReadToEnd();
             }
