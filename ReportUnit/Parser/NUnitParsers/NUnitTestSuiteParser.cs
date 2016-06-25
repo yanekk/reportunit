@@ -1,6 +1,8 @@
 ﻿using System.Xml.Linq;
 using ReportUnit.Model;
 using ReportUnit.Utils;
+using System;
+using System.Globalization;
 
 namespace ReportUnit.Parser.NUnitParsers
 {
@@ -11,10 +13,9 @@ namespace ReportUnit.Parser.NUnitParsers
             var testSuite = new TestSuite();
             testSuite.Name = FocusHelper.ExtractTestMethodName(testSuiteNode);
 
-            // Suite Time Info
-            testSuite.StartTime = testSuiteNode.GetAttributeValueOrDefault("start-time") ??
-                                  testSuiteNode.GetAttributeValueOrDefault("time");
-            testSuite.EndTime = testSuiteNode.GetAttributeValueOrDefault("end-time");
+            var runningTime = testSuiteNode.GetAttributeValueOrDefault("time");
+            if (runningTime != null)
+                testSuite.RunningTime = TimeSpan.FromSeconds(double.Parse(runningTime, CultureInfo.InvariantCulture));
 
             // any error messages and/or stack-trace
             var failure = testSuiteNode.Element("failure");

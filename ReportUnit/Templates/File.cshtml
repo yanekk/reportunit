@@ -1,4 +1,5 @@
 ﻿@using RazorEngine.Templating;
+@using System.Web;
 @inherits TemplateBase<ReportUnit.Model.Report>
 <!DOCTYPE html>
 <html lang='en'>
@@ -155,11 +156,7 @@
                                                     <div class='suite-result @suite.Status.ToString().ToLower() right label'>@suite.Status.ToString()</div>
                                                 </div>
                                                 <div class='suite-content hide'>
-                                                    <span alt='Suite started at time' title='Suite started at time' class='startedAt label green lighten-2 text-white'>@suite.StartTime</span>
-                                                    @if (!string.IsNullOrEmpty(@suite.EndTime))
-                                                    {
-                                                        <span alt='Suite ended at time' title='Suite ended at time' class='endedAt label label red lighten-2 text-white'>@suite.EndTime</span>
-                                                    }
+                                                    <span class='startedAt label green lighten-2 text-white'>@(suite.RunningTime.ToString(@"hh\:mm\:ss\.ff"))</span>
                                                     <div class='fixture-status-message'>
                                                         @if (!string.IsNullOrEmpty(@suite.Description))
                                                         {
@@ -183,8 +180,7 @@
                                                             {
                                                                 <tr class='@test.Status.ToString().ToLower() test-status'>
                                                                     <td class='test-name'>
-                                                                        @{var testName = test.Name.Replace(" < ", " & lt; ").Replace(" > ", " &gt; ");}
-                                                                        <span class='name'>@testName</span>
+                                                                        <span class='name'>@(HttpUtility.HtmlEncode(test.Name))</span>
                                                                         @if (!string.IsNullOrEmpty(@test.Description))
                                                                         {
                                                                             <span class='description'>@test.Description</span>

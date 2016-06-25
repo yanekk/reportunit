@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ReportUnit.Model
 {
@@ -14,6 +15,8 @@ namespace ReportUnit.Model
         public string StartTime { get; set; }
         public string EndTime { get; set; }
         public double Duration { get; set; }
+
+        public TimeSpan RunningTime { get; internal set; }
 
         public readonly List<Test> TestList = new List<Test>();
         public readonly List<string> Categories = new List<string>();
