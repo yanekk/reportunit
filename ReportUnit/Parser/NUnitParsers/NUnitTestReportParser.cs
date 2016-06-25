@@ -13,19 +13,23 @@ namespace ReportUnit.Parser.NUnitParsers
 
             // report counts
             report.Total = reportDoc.Descendants("test-case").Count();
+
             report.Passed = GetCountableAttributeOrDefault(reportDoc.Root, "passed");
             if(report.Passed == 0)
             {
                 report.Passed = reportDoc
                     .Descendants("test-case")
-                    .Count(x => x.Attribute("result").Value == "success");
+                    .Count(x => x.Attribute("executed").Value == "True" && x.Attribute("success").Value == "True");
             }
 
             report.Failed = GetCountableAttributeOrDefault(reportDoc.Root, "failures");
             report.Errors = GetCountableAttributeOrDefault(reportDoc.Root, "errors");
+
             report.Inconclusive = GetCountableAttributeOrDefault(reportDoc.Root, "inconclusive");
+            report.Inconclusive += GetCountableAttributeOrDefault(reportDoc.Root, "not-run");
+
             report.Skipped = GetCountableAttributeOrDefault(reportDoc.Root, "skipped");
-            report.Skipped = GetCountableAttributeOrDefault(reportDoc.Root, "ignored");
+            report.Skipped += GetCountableAttributeOrDefault(reportDoc.Root, "ignored");
 
             // report duration
             report.StartTime = reportDoc.Root.GetAttributeValueOrDefault("start-time")
