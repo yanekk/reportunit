@@ -246,7 +246,12 @@ namespace ReportUnit.Templates
                                                                         </tr>
                                                                         if (!String.IsNullOrEmpty(@test.StatusMessage)) {
                                                                             <tr>
-                                                                                <td colspan='3'><pre>@test.StatusMessage</pre></td>
+                                                                                <td colspan='3'>
+                                                                                    <pre style='font-weight: bold'>@test.StatusMessage</pre>
+                                                                                    @if (!String.IsNullOrEmpty(@test.StackTrace)) {
+                                                                                        <pre>@test.StackTrace</pre>
+                                                                                    }
+                                                                                </td>
                                                                             </tr>
                                                                         }
                                                                     }

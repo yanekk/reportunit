@@ -105,7 +105,7 @@ namespace ReportUnit.Parser
                     var categories = (from testCategory in unitTestElement.Descendants(xns + "TestCategoryItem")
                                           select testCategory.Attributes("TestCategory").Select(x => x.Value).FirstOrDefault()).ToList();
                     
-                    test.CategoryList = categories;
+                    test.CategoryList.AddRange(categories);
                     
                     
                     if (categories.Any())

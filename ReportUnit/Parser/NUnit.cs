@@ -2,266 +2,60 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
-using System.Threading.Tasks;
-
-using RazorEngine;
-using RazorEngine.Configuration;
-using RazorEngine.Templating;
-using RazorEngine.Text;
-
 using ReportUnit.Model;
 using ReportUnit.Utils;
-using ReportUnit.Logging;
+using ReportUnit.Parser.NUnitParsers;
 
 namespace ReportUnit.Parser
 {
     public class NUnit : IParser
     {
-        private string resultsFile;
-
-        private Logger logger = Logger.GetLogger();
-
         public Report Parse(string resultsFile)
         {
-            this.resultsFile = resultsFile;
+            var doc = XDocument.Load(resultsFile);
+            var report = NUnitTestReportParser.Parse(doc);
 
-            XDocument doc = XDocument.Load(resultsFile);
-
-            Report report = new Report();
-
+            report.RunInfo = CreateRunInfo(doc, report, resultsFile);
             report.FileName = Path.GetFileNameWithoutExtension(resultsFile);
-            report.AssemblyName = doc.Root.Attribute( "name" ) != null ? doc.Root.Attribute("name").Value : null;
+            report.AssemblyName = doc.Root.GetAttributeValueOrDefault("name");
             report.TestRunner = TestRunner.NUnit;
 
-            // run-info & environment values -> RunInfo
-            var runInfo = CreateRunInfo(doc, report);
-            if (runInfo != null) 
-            { 
-                report.AddRunInfo(runInfo.Info); 
-            }
-
-            // report counts
-            report.Total = doc.Descendants("test-case").Count();
-
-            report.Passed = 
-                doc.Root.Attribute("passed") != null 
-                    ? Int32.Parse(doc.Root.Attribute("passed").Value) 
-                    : doc.Descendants("test-case").Where(x => x.Attribute("result").Value.Equals("success", StringComparison.CurrentCultureIgnoreCase)).Count();
-
-            report.Failed = 
-                doc.Root.Attribute("failed") != null 
-                    ? Int32.Parse(doc.Root.Attribute("failed").Value) 
-                    : Int32.Parse(doc.Root.Attribute("failures").Value);
-            
-            report.Errors = 
-                doc.Root.Attribute("errors") != null 
-                    ? Int32.Parse(doc.Root.Attribute("errors").Value) 
-                    : 0;
-            
-            report.Inconclusive = 
-                doc.Root.Attribute("inconclusive") != null 
-                    ? Int32.Parse(doc.Root.Attribute("inconclusive").Value) 
-                    : Int32.Parse(doc.Root.Attribute("inconclusive").Value);
-            
-            report.Skipped = 
-                doc.Root.Attribute("skipped") != null 
-                    ? Int32.Parse(doc.Root.Attribute("skipped").Value) 
-                    : Int32.Parse(doc.Root.Attribute("skipped").Value);
-            
-            report.Skipped += 
-                doc.Root.Attribute("ignored") != null 
-                    ? Int32.Parse(doc.Root.Attribute("ignored").Value) 
-                    : 0;
-
-            // report duration
-            report.StartTime = 
-                doc.Root.Attribute("start-time") != null 
-                    ? doc.Root.Attribute("start-time").Value 
-                    : doc.Root.Attribute("date").Value + " " + doc.Root.Attribute("time").Value;
-
-            report.EndTime = 
-                doc.Root.Attribute("end-time") != null 
-                    ? doc.Root.Attribute("end-time").Value 
-                    : "";
-
-            // report status messages
-            var testSuiteTypeAssembly = doc.Descendants("test-suite")
-                .Where(x => x.Attribute("result").Value.Equals("Failed") && x.Attribute("type").Value.Equals("Assembly"));
-            report.StatusMessage = testSuiteTypeAssembly != null && testSuiteTypeAssembly.Count() > 0
-                ? testSuiteTypeAssembly.First().Value
-                : "";
-
-            IEnumerable<XElement> suites = doc
+            var suites = doc
                 .Descendants("test-suite")
                 .Where(x => x.Attribute("type").Value.Equals("TestFixture", StringComparison.CurrentCultureIgnoreCase));
             
             suites.AsParallel().ToList().ForEach(ts =>
             {
-                var testSuite = new TestSuite();
-                testSuite.Name = FocusHelper.ExtractTestMethodName(ts);
-
-                // Suite Time Info
-                testSuite.StartTime = 
-                    ts.Attribute("start-time") != null 
-                        ? ts.Attribute("start-time").Value 
-                        : string.Empty;
-
-                testSuite.StartTime = 
-                    String.IsNullOrEmpty(testSuite.StartTime) && ts.Attribute("time") != null 
-                        ? ts.Attribute("time").Value 
-                        : testSuite.StartTime; 
-
-                testSuite.EndTime = 
-                    ts.Attribute("end-time") != null 
-                        ? ts.Attribute("end-time").Value 
-                        : "";
-
-                // any error messages and/or stack-trace
-                var failure = ts.Element("failure");
-                if (failure != null)
-                {
-                    var message = failure.Element("message");
-                    if (message != null)
-                    {
-                        testSuite.StatusMessage = message.Value;
-                    }
-
-                    var stackTrace = failure.Element("stack-trace");
-                    if (stackTrace != null && !string.IsNullOrWhiteSpace(stackTrace.Value))
-                    {
-                        testSuite.StackTrace = stackTrace.Value;
-                    }
-                }
-
-                // get test suite level categories
-                var suiteCategories = this.GetCategories(ts, false);
+                var testSuite = NUnitTestSuiteParser.Create(ts);
 
                 // Test Cases
                 ts.Descendants("test-case").AsParallel().ToList().ForEach(tc =>
                 {
-                    var test = new Model.Test();
-
-                    test.Name = FocusHelper.ExtractTestCaseName(tc);
-                    test.Status = StatusExtensions.ToStatus(tc.Attribute("result").Value);
-                    
-                    // main a master list of all status
-                    // used to build the status filter in the view
+                    var test = NUnitTestCaseParser.Parse(tc);
                     report.StatusList.Add(test.Status);
 
-                    // TestCase Time Info
-                    test.StartTime = 
-                        tc.Attribute("start-time") != null 
-                            ? tc.Attribute("start-time").Value 
-                            : "";
-                    test.StartTime = 
-                        String.IsNullOrEmpty(test.StartTime) && (tc.Attribute("time") != null) 
-                            ? tc.Attribute("time").Value 
-                            : test.StartTime;
-                    test.EndTime = 
-                        tc.Attribute("end-time") != null 
-                            ? tc.Attribute("end-time").Value 
-                            : "";
+                    report.CategoryList.AddRange(test.CategoryList);
+                    test.CategoryList.AddRange(testSuite.Categories);
 
-                    // description
-                    var description = 
-                        tc.Descendants("property")
-                        .Where(c => c.Attribute("name").Value.Equals("Description", StringComparison.CurrentCultureIgnoreCase));
-                    test.Description = 
-                        description.Count() > 0 
-                            ? description.ToArray()[0].Attribute("value").Value 
-                            : "";
-
-                    // get test case level categories
-                    var categories = this.GetCategories(tc, true);
-
-                    // if this is a parameterized test, get the categories from the parent test-suite
-                    var parameterizedTestElement = tc
-                        .Ancestors("test-suite").ToList()
-                        .Where(x => x.Attribute("type").Value.Equals("ParameterizedTest", StringComparison.CurrentCultureIgnoreCase))
-                        .FirstOrDefault();
-
-                    if (null != parameterizedTestElement)
-                    {
-                        var paramCategories = this.GetCategories(parameterizedTestElement, false);
-                        categories.UnionWith(paramCategories);
-                    }
-
-                    //Merge test level categories with suite level categories and add to test and report
-                    categories.UnionWith(suiteCategories);
-                    test.CategoryList.AddRange(categories);
-                    report.CategoryList.AddRange(categories);
-
-
-                   // add NUnit console output to the status message
-                    if (tc.Element("failure") != null)
-                    {
-                        var failureElement = tc.Element("failure");
-                        test.StatusMessage += failureElement.Element("message") != null
-                          ? failureElement.Descendants("message").First().Value.Trim()
-                          : "";
-
-                        test.StatusMessage += failureElement.Element("stack-trace") != null
-                          ? failureElement.Descendants("stack-trace").First().Value.Trim()
-                          : "";
-                    }
-
-                    if (test.Status == Status.Inconclusive)
-                    {
-                        test.StatusMessage = tc.Element("reason").Element("message").Value;
-                    }
-
-                   testSuite.TestList.Add(test);
+                    testSuite.TestList.Add(test);
                 });
-
                 testSuite.Status = ReportUtil.GetFixtureStatus(testSuite.TestList);
-
                 report.TestSuiteList.Add(testSuite);
             });
 
             //Sort category list so it's in alphabetical order
             report.CategoryList.Sort();
-
             return report;
         }
 
-        /// <summary>
-        /// Returns categories for the direct children or all descendents of an XElement
-        /// </summary>
-        /// <param name="elem">XElement to parse</param>
-        /// <param name="allDescendents">If true, return all descendent categories.  If false, only direct children</param>
-        /// <returns></returns>
-        private HashSet<string> GetCategories(XElement elem, bool allDescendents)
+        private Dictionary<string, string> CreateRunInfo(XDocument doc, Report report, string resultsFile)
         {
-            //Define which function to use
-            var parser = allDescendents
-                ? new Func<XElement, string, IEnumerable<XElement>>((e, s) => e.Descendants(s))
-                : new Func<XElement, string, IEnumerable<XElement>>((e, s) => e.Elements(s));
+            var result = new Dictionary<string, string>();
+            if (doc.Root.Element("environment") == null)
+                return result;
 
-            //Grab unique categories
-            HashSet<string> categories = new HashSet<string>();
-            bool hasCategories = parser(elem, "categories").Any();
-            if (hasCategories)
-            {
-                List<XElement> cats = parser(elem, "categories").Elements("category").ToList();
-
-                cats.ForEach(x =>
-                {
-                    string cat = x.Attribute("name").Value;
-                    categories.Add(cat);
-                });
-            }
-
-            return categories;
-        }
-
-        private RunInfo CreateRunInfo(XDocument doc, Report report)
-        {
-            if (doc.Element("environment") == null)
-                return null;
-
-            RunInfo runInfo = new RunInfo();
+            var runInfo = new RunInfo();
             runInfo.TestRunner = report.TestRunner;
 
             XElement env = doc.Descendants("environment").First();
@@ -276,9 +70,7 @@ namespace ReportUnit.Parser
             runInfo.Info.Add("User", env.Attribute("user").Value);
             runInfo.Info.Add("User Domain", env.Attribute("user-domain").Value);
 
-            return runInfo;
+            return runInfo.Info;
         }
-        
-        public NUnit() { }
     }
 }

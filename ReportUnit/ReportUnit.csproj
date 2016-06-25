@@ -39,6 +39,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Razor">
       <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
     </Reference>
@@ -58,6 +59,10 @@
     <Compile Include="Parser\IParser.cs" />
     <Compile Include="Parser\MSTest2010.cs" />
     <Compile Include="Parser\NUnit.cs" />
+    <Compile Include="Parser\NUnitParsers\NUnitParsingHelper.cs" />
+    <Compile Include="Parser\NUnitParsers\NUnitTestCaseParser.cs" />
+    <Compile Include="Parser\NUnitParsers\NUnitTestReportParser.cs" />
+    <Compile Include="Parser\NUnitParsers\NUnitTestSuiteParser.cs" />
     <Compile Include="Parser\ParserFactory.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="Model\RunInfo.cs" />
@@ -75,6 +80,7 @@
     <Compile Include="Templates\Summary.cs" />
     <Compile Include="Utils\DateTimeHelper.cs" />
     <Compile Include="Utils\ReportUtil.cs" />
+    <Compile Include="Utils\XmlExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

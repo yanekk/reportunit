@@ -31,7 +31,7 @@ namespace ReportUnit.Model
 
         public TestRunner TestRunner { get; set; }
 
-        public Dictionary<string, string> RunInfo { get; private set; }
+        public Dictionary<string, string> RunInfo { get; set; }
 
         public void AddRunInfo(Dictionary<string, string> runInfo)
         {
