@@ -86,7 +86,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportUnitService.cs" />
     <Compile Include="Templates\SideNav.cs" />
-    <Compile Include="Templates\Summary.cs" />
     <Compile Include="Utils\DateTimeHelper.cs" />
     <Compile Include="Utils\ReportUtil.cs" />
     <Compile Include="Utils\ResourceHelper.cs" />
@@ -97,6 +96,7 @@
     <None Include="packages.config" />
     <None Include="Readme.md" />
     <EmbeddedResource Include="Templates\File.cshtml" />
+    <EmbeddedResource Include="Templates\Summary.cshtml" />
     <None Include="Templates\Web.config" />
   </ItemGroup>
   <ItemGroup>

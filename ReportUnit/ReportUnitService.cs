@@ -51,7 +51,6 @@ namespace ReportUnit
             	{
                     IParser parser = (IParser)Assembly.GetExecutingAssembly().CreateInstance(_ns + "." + Enum.GetName(typeof(TestRunner), testRunner));
                     var report = parser.Parse(filePath.FullName);
-
                     compositeTemplate.AddReport(report);
                 }
             }
@@ -59,9 +58,9 @@ namespace ReportUnit
             if (compositeTemplate.ReportList.Count > 1)
             {
                 compositeTemplate.SideNavLinks = compositeTemplate.SideNavLinks.Insert(0, Templates.SideNav.IndexLink);
-
-                string summary = Engine.Razor.RunCompile(Templates.Summary.GetSource(), "summary", typeof(Model.CompositeTemplate), compositeTemplate, null);
-                File.WriteAllText(Path.Combine(outputDirectory, "Index.html"), summary);
+                SaveTemplate(compositeTemplate,
+                    Path.Combine(outputDirectory, "Index.html"),
+                    "ReportUnit.Templates.Summary.cshtml");
             }
 
 			foreach (var report in compositeTemplate.ReportList)
@@ -69,9 +68,9 @@ namespace ReportUnit
                 report.SideNavLinks = compositeTemplate.SideNavLinks;
                 CopyArtifacts(outputDirectory, report);
 
-                var template = ResourceHelper.GetStringResource("ReportUnit.Templates.File.cshtml");
-                var html = Engine.Razor.RunCompile(template, "report", typeof(Report), report);
-                File.WriteAllText(Path.Combine(outputDirectory, report.FileName + ".html"), html);                
+                SaveTemplate(report, 
+                    Path.Combine(outputDirectory, report.FileName + ".html"), 
+                    "ReportUnit.Templates.File.cshtml");          
             }
             CopyAssetFiles(outputDirectory);
         }
@@ -109,6 +108,13 @@ namespace ReportUnit
                 var targetFile = Path.Combine(targetDirectory, fileName);
                 File.Copy(soruceFile, targetFile, true);
             }
+        }
+
+        private void SaveTemplate<TModel>(TModel model, string filePath, string templateName)
+        {
+            var template = ResourceHelper.GetStringResource(templateName);
+            var html = Engine.Razor.RunCompile(template, typeof(TModel).Name, typeof(TModel), model);
+            File.WriteAllText(filePath, html);
         }
 
         private TestRunner GetTestRunner(string inputFile)
