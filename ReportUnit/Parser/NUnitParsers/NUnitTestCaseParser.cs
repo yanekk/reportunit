@@ -4,6 +4,7 @@ using System.Web;
 using System.Xml.Linq;
 using ReportUnit.Model;
 using ReportUnit.Utils;
+using System.Collections.Generic;
 
 namespace ReportUnit.Parser.NUnitParsers
 {
@@ -21,23 +22,33 @@ namespace ReportUnit.Parser.NUnitParsers
                              testCaseNode.GetAttributeValueOrDefault("time");
             test.EndTime = testCaseNode.GetAttributeValueOrDefault("end-time");
 
-            // description
+            test.Description = ExtractDescription(testCaseNode);
+            test.CategoryList.AddRange(ExtractCategories(testCaseNode));
+
+            test.StatusMessage = ExtractStatusMessage(testCaseNode);
+            test.StackTrace = ExtractStackTrace(testCaseNode);
+
+            return test;
+        }
+
+        private static string ExtractDescription(XElement testCaseNode)
+        {
             var description = testCaseNode
                 .Descendants("property")
-                .Where(c => c.Attribute("name").Value.Equals("Description", StringComparison.CurrentCultureIgnoreCase));
+                .SingleOrDefault(c => c.Attribute("name").Value == "Description");
+            return description != null
+                ? description.GetAttributeValueOrDefault("value")
+                : "";
+        }
 
-            test.Description =
-                description.Count() > 0
-                    ? description.ToArray()[0].Attribute("value").Value
-                    : "";
-
-            // get test case level categories
+        private static IEnumerable<string> ExtractCategories(XElement testCaseNode)
+        {
             var categories = NUnitParsingHelper.GetCategories(testCaseNode, true);
 
             // if this is a parameterized test, get the categories from the parent test-suite
             var parameterizedTestElement = testCaseNode
                 .Ancestors("test-suite").ToList()
-                .Where(x => x.Attribute("type").Value.Equals("ParameterizedTest", StringComparison.CurrentCultureIgnoreCase))
+                .Where(x => x.Attribute("type").Value == "ParameterizedTest")
                 .FirstOrDefault();
 
             if (null != parameterizedTestElement)
@@ -45,22 +56,29 @@ namespace ReportUnit.Parser.NUnitParsers
                 var paramCategories = NUnitParsingHelper.GetCategories(parameterizedTestElement, false);
                 categories.AddRange(paramCategories);
             }
+            return categories;
+        }
 
-            test.CategoryList.AddRange(categories);
-
-            // add NUnit console output to the status message
+        private static string ExtractStatusMessage(XElement testCaseNode)
+        {
             var failureElement = testCaseNode.Element("failure");
             if (failureElement != null)
-            {
-                test.StatusMessage = HttpUtility.HtmlEncode(failureElement.GetChildElementValueOrDefault("message"));
-                test.StackTrace = HttpUtility.HtmlEncode(failureElement.GetChildElementValueOrDefault("stack-trace"));
-            }
+                return HttpUtility.HtmlEncode(failureElement.GetChildElementValueOrDefault("message"));
 
-            if (test.Status == Status.Inconclusive)
-            {
-                test.StatusMessage = testCaseNode.Element("reason").Element("message").Value;
-            }
-            return test;
+            var reasonElement = testCaseNode.Element("reason");
+            if (reasonElement != null)
+                return HttpUtility.HtmlEncode(reasonElement.GetChildElementValueOrDefault("message"));
+
+            return null;
+        }
+
+        private static string ExtractStackTrace(XElement testCaseNode)
+        {
+            var failureElement = testCaseNode.Element("failure");
+            if (failureElement != null)
+                return HttpUtility.HtmlEncode(failureElement.GetChildElementValueOrDefault("stack-trace"));
+
+            return null;
         }
     }
 }
