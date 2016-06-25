@@ -33,7 +33,7 @@ namespace ReportUnit.Parser
                 ts.Descendants("test-case").AsParallel().ToList().ForEach(tc =>
                 {
                     var test = NUnitTestCaseParser.Parse(tc);
-                    report.StatusList.Add(test.Status);
+                    report.AddStatus(test.Status);
 
                     report.CategoryList.AddRange(test.CategoryList);
                     test.CategoryList.AddRange(testSuite.Categories);

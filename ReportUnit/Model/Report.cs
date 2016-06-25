@@ -9,7 +9,11 @@ namespace ReportUnit.Model
 {
     public class Report
     {
-        public List<Status> StatusList;
+        private IList<Status> _statusList = new List<Status>();
+        public IEnumerable<Status> StatusList
+        {
+            get { return _statusList.OrderBy(s => s.ToString()); }
+        }
 
         public List<string> CategoryList;
 
@@ -74,7 +78,12 @@ namespace ReportUnit.Model
         {
             TestSuiteList = new List<TestSuite>();
             CategoryList = new List<string>();
-            StatusList = new List<Status>();
+        }
+
+        public void AddStatus(Status status)
+        {
+            if (!_statusList.Contains(status))
+                _statusList.Add(status);
         }
     }
 }

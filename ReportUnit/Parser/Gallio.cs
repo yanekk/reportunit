@@ -86,7 +86,7 @@ namespace ReportUnit.Parser
 
                 // main a master list of all status
                 // used to build the status filter in the view
-                report.StatusList.Add(test.Status);
+                report.AddStatus(test.Status);
 
                 var entry = tc.Descendants(xns + "entry");
 
