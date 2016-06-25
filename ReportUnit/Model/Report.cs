@@ -9,13 +9,24 @@ namespace ReportUnit.Model
 {
     public class Report
     {
-        private IList<Status> _statusList = new List<Status>();
+        private List<Status> _statusList = new List<Status>();
         public IEnumerable<Status> StatusList
         {
-            get { return _statusList.OrderBy(s => s.ToString()); }
+            get
+            {
+                _statusList.Sort();
+                return _statusList;
+            }
         }
-
-        public List<string> CategoryList;
+        private List<string> _categoryList = new List<string>();
+        public IEnumerable<string> CategoryList
+        {
+            get
+            {
+                _categoryList.Sort();
+                return _categoryList;
+            }
+        }
 
         public List<TestSuite> TestSuiteList { get; set; }
 
@@ -77,13 +88,26 @@ namespace ReportUnit.Model
         public Report()
         {
             TestSuiteList = new List<TestSuite>();
-            CategoryList = new List<string>();
         }
 
         public void AddStatus(Status status)
         {
             if (!_statusList.Contains(status))
                 _statusList.Add(status);
+        }
+
+        public void AddCategory(string category)
+        {
+            if (!_categoryList.Contains(category))
+                _categoryList.Add(category);
+        }
+
+        public void AddCategories(IEnumerable<string> categories)
+        {
+            foreach(var category in categories)
+            {
+                AddCategory(category);
+            }
         }
     }
 }

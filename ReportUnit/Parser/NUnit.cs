@@ -34,8 +34,8 @@ namespace ReportUnit.Parser
                 {
                     var test = NUnitTestCaseParser.Parse(tc);
                     report.AddStatus(test.Status);
+                    report.AddCategories(test.CategoryList);
 
-                    report.CategoryList.AddRange(test.CategoryList);
                     test.CategoryList.AddRange(testSuite.Categories);
 
                     testSuite.TestList.Add(test);
@@ -44,8 +44,6 @@ namespace ReportUnit.Parser
                 report.TestSuiteList.Add(testSuite);
             });
 
-            //Sort category list so it's in alphabetical order
-            report.CategoryList.Sort();
             return report;
         }
 

@@ -120,17 +120,19 @@
                                                     <li class='clear'><a href='#!'>Clear Filters</a></li>
                                                 </ul>
                                         </div>
-                                        @if (Model.CategoryList.Count > 0)
+                                        @if (Model.CategoryList.Any())
                                         {
                                             <div>
                                                 <a class='category-toggle dropdown-button button' href='#' data-hover='true' data-beloworigin='true' data-constrainwidth='false' data-activates='category-toggle' alt='Filter categories' title='Filter categories'><i class='mdi-image-style icon'></i></a><ul class='dropdown-content' id='category-toggle'>
                                                     <ul>
-                                                        @foreach (var cat in Model.CategoryList.Distinct().ToList())
+                                                        @foreach (var category in Model.CategoryList)
                                                         {
-                                                            <li class='@cat'><a href='#!'>@cat</a></li>
+                                                            <li class='@category'><a href='#!'>@category</a></li>
                                                         }
                                                         <li class='divider'></li>
-                                                        <li class='clear'><a href='#!'>Clear Filters</a></li>
+                                                        <li class='clear'>
+                                                            <a href='#!'>Clear Filters</a>
+                                                        </li>
                                                     </ul>
                                             </div>
                                         }
@@ -154,16 +156,16 @@
                                                 </div>
                                                 <div class='suite-content hide'>
                                                     <span alt='Suite started at time' title='Suite started at time' class='startedAt label green lighten-2 text-white'>@suite.StartTime</span>
-                                                    @if (!String.IsNullOrEmpty(@suite.EndTime))
+                                                    @if (!string.IsNullOrEmpty(@suite.EndTime))
                                                     {
                                                         <span alt='Suite ended at time' title='Suite ended at time' class='endedAt label label red lighten-2 text-white'>@suite.EndTime</span>
                                                     }
                                                     <div class='fixture-status-message'>
-                                                        @if (!String.IsNullOrEmpty(@suite.Description))
+                                                        @if (!string.IsNullOrEmpty(@suite.Description))
                                                         {
                                                             <div class='suite-desc'>@suite.Description</div>
                                                         }
-                                                        @if (!String.IsNullOrEmpty(@suite.StatusMessage))
+                                                        @if (!string.IsNullOrEmpty(@suite.StatusMessage))
                                                         {
                                                             <div class='suite-desc'>@suite.StatusMessage</div>
                                                         }
@@ -182,7 +184,7 @@
                                                                 <tr class='@test.Status.ToString().ToLower() test-status'>
                                                                     <td class='test-name'>
                                                                         @{var testName = test.Name.Replace(" < ", " & lt; ").Replace(" > ", " &gt; ");}
-                                                                        @if (!String.IsNullOrEmpty(@test.Description))
+                                                                        @if (!string.IsNullOrEmpty(@test.Description))
                                                                         {
                                                                             <a class='showDescription name' href='#'>@testName</a>
                                                                             <p class='hide description'>@test.Description</p>

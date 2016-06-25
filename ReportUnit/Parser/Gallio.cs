@@ -122,7 +122,7 @@ namespace ReportUnit.Parser
                         string cat = s.Value;
 
                         test.CategoryList.Add(cat);
-                        report.CategoryList.Add(cat);
+                        report.AddCategory(cat);
                     });
                 }
 
