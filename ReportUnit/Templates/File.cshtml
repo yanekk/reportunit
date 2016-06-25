@@ -184,14 +184,10 @@
                                                                 <tr class='@test.Status.ToString().ToLower() test-status'>
                                                                     <td class='test-name'>
                                                                         @{var testName = test.Name.Replace(" < ", " & lt; ").Replace(" > ", " &gt; ");}
+                                                                        <span class='name'>@testName</span>
                                                                         @if (!string.IsNullOrEmpty(@test.Description))
                                                                         {
-                                                                            <a class='showDescription name' href='#'>@testName</a>
-                                                                            <p class='hide description'>@test.Description</p>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <span class='name'>@testName</span>
+                                                                            <span class='description'>@test.Description</span>
                                                                         }
                                                                     </td>
                                                                     <td class='test-status @test.Status.ToString().ToLower()'>

@@ -38,9 +38,17 @@ namespace ReportUnit.Parser.NUnitParsers
             var description = testCaseNode
                 .Descendants("property")
                 .SingleOrDefault(c => c.Attribute("name").Value == "Description");
-            return description != null
-                ? description.GetAttributeValueOrDefault("value")
-                : "";
+
+            if (description != null)
+                return description.GetAttributeValueOrDefault("value");
+
+            var parameterizedTestSuite = testCaseNode
+                .Ancestors("test-suite")
+                .SingleOrDefault(testSuite => testSuite.GetAttributeValueOrDefault("type") == "ParameterizedTest");
+
+            if (parameterizedTestSuite != null)
+                return parameterizedTestSuite.GetAttributeValueOrDefault("description");
+            return null;
         }
 
         private static IEnumerable<string> ExtractCategories(XElement testCaseNode)

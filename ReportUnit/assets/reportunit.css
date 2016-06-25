@@ -18,9 +18,16 @@ pre {
 	white-space: -o-pre-wrap;  
 	word-wrap: break-word;     
 }
+
 td.test-name {
 	vertical-align: top;
 }
+td.test-name .description {
+	display: block;
+	font-size: 12px;
+	color: #888;
+}
+
 td.test-status {
 	min-width: 25%;
 }

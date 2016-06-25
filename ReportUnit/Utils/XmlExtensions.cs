@@ -6,16 +6,14 @@ namespace ReportUnit.Utils
     {
         public static string GetChildElementValueOrDefault(this XElement parentElement, string elementName)
         {
-            return parentElement.Element(elementName) != null
-                ? parentElement.Element(elementName).Value.Trim()
-                : null;
+            var childElement = parentElement.Element(elementName);
+            return childElement != null ? childElement.Value.Trim() : null;
         }
 
         public static string GetAttributeValueOrDefault(this XElement element, string attributeName)
         {
-            return element.Attribute(attributeName) != null
-                ? element.Attribute(attributeName).Value
-                : null;
+            var attribute = element.Attribute(attributeName);
+            return attribute != null ? attribute.Value : null;
         }
     }
 }
