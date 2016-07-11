@@ -148,7 +148,7 @@
                                         </div>
                                     </div>
                                     <ul id='suite-collection' class='no-margin-v'>
-                                        @foreach (var suite in @Model.TestSuiteList)
+                                        @foreach (var suite in Model.TestSuiteList)
                                         {
                                             <li class='suite @suite.Status.ToString().ToLower()'>
                                                 <div class='suite-head'>
@@ -172,7 +172,8 @@
                                                             <tr>
                                                                 <th>TestName</th>
                                                                 <th>Status</th>
-                                                                <th>Category</th>
+                                                                <th>Categories</th>
+                                                                <th>Info</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -181,7 +182,7 @@
                                                                 <tr class='@test.Status.ToString().ToLower() test-status'>
                                                                     <td class='test-name'>
                                                                         <span class='name'>@(HttpUtility.HtmlEncode(test.Name))</span>
-                                                                        @if (!string.IsNullOrEmpty(@test.Description))
+                                                                        @if (!string.IsNullOrEmpty(test.Description))
                                                                         {
                                                                             <span class='description'>@test.Description</span>
                                                                         }
@@ -189,48 +190,50 @@
                                                                     <td class='test-status @test.Status.ToString().ToLower()'>
                                                                         <span class='label @test.Status.ToString().ToLower()'>@test.Status.ToString()</span>
                                                                     </td>
-                                                                    @if (Model.TestSuiteList.Count > 0 && suite.TestList.Any(x => x.CategoryList.Count > 0))
-                                                                    {
-                                                                        <td>
-                                                                            @if (test.CategoryList.Count > 0)
+                                                                    <td>
+                                                                        <div class='category-list'>
+                                                                            @foreach (var cat in test.CategoryList)
                                                                             {
-                                                                                <div class='category-list'>
-                                                                                    @foreach (var cat in test.CategoryList)
-                                                                                    {
-                                                                                        <span class='label category'>@cat</span>
-                                                                                    }
-                                                                                </div>
+                                                                                <span class='label category'>@cat</span>
                                                                             }
-                                                                        </td>
-                                                                    }
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="test-info">
+                                                                        @if (test.StartTime != null || test.EndTime != null)
+                                                                        {
+                                                                            <div><b>Start Time:</b> @test.StartTime</div>
+                                                                            <div><b>Finish Time:</b> @test.EndTime</div>
+                                                                        }
+                                                                    </td>
                                                                     <td class='test-features hide @test.GetCategories()'></td>
                                                                 </tr>
-                                                                if (!string.IsNullOrEmpty(@test.StatusMessage))
+                                                                if (string.IsNullOrEmpty(test.StatusMessage))
                                                                 {
-                                                                    <tr>
-                                                                        <td colspan='3'>
-                                                                            <pre style='font-weight: bold'>@test.StatusMessage</pre>
-                                                                            @if (test.ArtifactSet != null)
-                                                                            {
-                                                                                <div class="artifact-set">
-                                                                                    <h2>Artifacts: </h2>
-                                                                                    <ul class="artifact-set">
-                                                                                        @foreach(var artifact in test.ArtifactSet.Artifacts)
-                                                                                        {
-                                                                                            <li>
-                                                                                                <a href="@artifact.FilePath" target="_blank">@artifact.FileName</a>
-                                                                                            </li>
-                                                                                        }
-                                                                                    </ul>
-                                                                                </div>
-                                                                            }
-                                                                            @if (!string.IsNullOrEmpty(@test.StackTrace))
-                                                                            {
-                                                                                <pre>@test.StackTrace</pre>
-                                                                            }
-                                                                        </td>
-                                                                    </tr>
+                                                                    continue;
                                                                 }
+                                                                <tr>
+                                                                    <td colspan='4'>
+                                                                        <pre style='font-weight: bold'>@test.StatusMessage</pre>
+                                                                        @if (test.ArtifactSet != null)
+                                                                        {
+                                                                            <div class="artifact-set">
+                                                                                <h2>Artifacts: </h2>
+                                                                                <ul class="artifact-set">
+                                                                                    @foreach(var artifact in test.ArtifactSet.Artifacts)
+                                                                                    {
+                                                                                        <li>
+                                                                                            <a href="@artifact.FilePath" target="_blank">@artifact.FileName</a>
+                                                                                        </li>
+                                                                                    }
+                                                                                </ul>
+                                                                            </div>
+                                                                        }
+                                                                        @if (!string.IsNullOrEmpty(test.StackTrace))
+                                                                        {
+                                                                            <pre>@test.StackTrace</pre>
+                                                                        }
+                                                                    </td>
+                                                                </tr>
                                                             }
                                                         </tbody>
                                                     </table>

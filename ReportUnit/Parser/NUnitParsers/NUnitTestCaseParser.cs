@@ -18,9 +18,8 @@ namespace ReportUnit.Parser.NUnitParsers
             test.Status = testCaseNode.Attribute("result").Value.ToStatus();
 
             // TestCase Time Info
-            test.StartTime = testCaseNode.GetAttributeValueOrDefault("start-time") ??
-                             testCaseNode.GetAttributeValueOrDefault("time");
-            test.EndTime = testCaseNode.GetAttributeValueOrDefault("end-time");
+            test.StartTime = ExtractPropertyValue(testCaseNode, "StartTime");
+            test.EndTime = ExtractPropertyValue(testCaseNode, "FinishTime");
 
             test.Description = ExtractDescription(testCaseNode);
             test.CategoryList.AddRange(ExtractCategories(testCaseNode));
@@ -33,12 +32,22 @@ namespace ReportUnit.Parser.NUnitParsers
             return test;
         }
 
+        private static string ExtractPropertyValue(XElement testCaseNode, string propertyName)
+        {
+            var property = ExtractProperty(testCaseNode, propertyName);
+            return property != null ? property.GetAttributeValueOrDefault("value") : null;
+        }
+
+        private static XElement ExtractProperty(XElement testCaseNode, string propertyName)
+        {
+            return testCaseNode
+                .Descendants("property")
+                .SingleOrDefault(c => c.Attribute("name").Value == propertyName);
+        }
+
         private static string ExtractDescription(XElement testCaseNode)
         {
-            var description = testCaseNode
-                .Descendants("property")
-                .SingleOrDefault(c => c.Attribute("name").Value == "Description");
-
+            var description = ExtractProperty(testCaseNode, "Description");
             if (description != null)
                 return description.GetAttributeValueOrDefault("value");
 

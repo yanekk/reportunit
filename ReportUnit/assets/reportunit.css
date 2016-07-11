@@ -21,6 +21,10 @@ pre {
 
 td.test-name {
 	vertical-align: top;
+    width: 60%;
+}
+td.test-info {
+    font-size: 11px;
 }
 td.test-name .description {
 	display: block;
