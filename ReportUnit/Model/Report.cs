@@ -85,6 +85,11 @@ namespace ReportUnit.Model
 
         public double Errors { get; set; }
 
+        public double Others
+        {
+            get { return Inconclusive + Skipped + Errors; }
+        }
+
         public List<SideNavLink> SideNavLinks = new List<SideNavLink>();
 
         public Report()

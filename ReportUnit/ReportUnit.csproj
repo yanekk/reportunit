@@ -109,6 +109,7 @@
     <Compile Include="Razor\TemplateEngine.cs" />
     <Compile Include="ReportUnitService.cs" />
     <Compile Include="Utils\DateTimeHelper.cs" />
+    <Compile Include="Utils\DoubleExtensions.cs" />
     <Compile Include="Utils\ReportUtil.cs" />
     <Compile Include="Utils\ResourceHelper.cs" />
     <Compile Include="Utils\XmlExtensions.cs" />

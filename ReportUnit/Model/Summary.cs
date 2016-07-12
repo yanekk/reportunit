@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ReportUnit.Model
 {
@@ -21,5 +22,25 @@ namespace ReportUnit.Model
 
         public string TemplateName { get { return "Summary"; } }
         public string FileName { get { return "Index"; } }
+
+        public double Total
+        {
+            get { return Reports.Sum(r => r.Total); }
+        }
+
+        public double Passed
+        {
+            get { return Reports.Sum(r => r.Passed); }
+        }
+
+        public double Failed
+        {
+            get { return Reports.Sum(r => r.Failed); }
+        }
+
+        public double Others
+        {
+            get { return Reports.Sum(r => r.Others); }
+        }
     }
 }

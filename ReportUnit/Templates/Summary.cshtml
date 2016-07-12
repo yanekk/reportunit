@@ -1,4 +1,6 @@
-﻿@using RazorEngine.Templating;
+﻿@using System.Globalization
+@using RazorEngine.Templating;
+@using ReportUnit.Utils
 @inherits TemplateBase<ReportUnit.Model.Summary>
 @{Layout = "_Shared/_Layout";}
 <div class='header'>
@@ -36,71 +38,37 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @{double totalPassed = 0;
-                                double totalFailed = 0;
-                                double totalOthers = 0;
-                            }
-
                             @foreach (var report in Model.Reports)
                             {
                                 <tr>
                                     <td><a href='./@(report.FileName).html'>@report.FileName</a></td>
                                     <td>@report.TestRunner</td>
                                     <td>@report.Total</td>
-                                    <td>@report.Passed</td>
-                                    <td>@report.Failed</td>
-                                    <td>@(report.Inconclusive + report.Skipped + report.Errors)</td>
+                                    <td>@report.Passed.AsPercentageOf(report.Total)%</td>
+                                    <td>@report.Failed.AsPercentageOf(report.Total)%</td>
+                                    <td>@(report.Others.AsPercentageOf(report.Total))%</td>
                                     <td>
-                                        @{var total = report.Total;
-                                            var passed = report.Passed;
-                                            var failed = report.Failed;
-                                            var others = report.Total - (report.Passed + report.Failed);
-
-                                            totalPassed += passed;
-                                            totalFailed += failed;
-                                            totalOthers += others;
-                                        }
-                                        @if (report.Total != 0)
-                                        {
-                                            <div class='progress2'>
-                                                @if (passed != 0)
-                                                {
-                                                    <div style='width: @((passed / total) * 100)%' class='progress-bar2 progress-bar-success progress-bar-striped'>
-                                                        <span class='sr-only'>@passed</span>
-                                                    </div>
-                                                }
-                                                @if (others != 0)
-                                                {
-                                                    <div style='width: @((others / total) * 100)%' class='progress-bar2 progress-bar-warning progress-bar-striped'>
-                                                        <span class='sr-only'>@others</span>
-                                                    </div>
-                                                }
-                                                @if (failed != 0)
-                                                {
-                                                    <div style='width: @((failed / total) * 100)%' class='progress-bar2 progress-bar-danger progress-bar-striped'>
-                                                        <span class='sr-only'>@failed</span>
-                                                    </div>
-                                                }
+                                        <div class='progress2'>
+                                            <div style='width: @report.Passed.AsPercentageOf(report.Total).ToString(CultureInfo.InvariantCulture)%' class='progress-bar2 progress-bar-success progress-bar-striped'>
+                                                <span class='sr-only'>@report.Passed</span>
                                             </div>
-                                        }
-                                        else
-                                        {
-                                            <div class='progress2'>
-                                                <div style='width: 0%' class='progress-bar2 progress-bar-success progress-bar-striped'>
-                                                    <span class='sr-only'>0</span>
-                                                </div>
+                                            <div style='width: @report.Others.AsPercentageOf(report.Total).ToString(CultureInfo.InvariantCulture)%' class='progress-bar2 progress-bar-warning progress-bar-striped'>
+                                                <span class='sr-only'>@report.Others</span>
                                             </div>
-                                        }
+                                            <div style='width: @report.Failed.AsPercentageOf(report.Total).ToString(CultureInfo.InvariantCulture)%' class='progress-bar2 progress-bar-danger progress-bar-striped'>
+                                                <span class='sr-only'>@report.Failed</span>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
-                                            }
+                            }
                             <tr>
-                                <td><span class='weight-normal'>Totals</span></td>
+                                <td><span class='weight-normal'>Total</span></td>
                                 <td>-</td>
-                                <td id='total-tests'>@Model.Reports.SelectMany(x => x.TestSuiteList).SelectMany(x => x.TestList).Count()</td>
-                                <td id='total-passed'>@totalPassed</td>
-                                <td id='total-failed'>@totalFailed</td>
-                                <td id='total-others'>@totalOthers</td>
+                                <td id="total-tests">@Model.Total</td>
+                                <td id="total-passed">@Model.Passed.AsPercentageOf(Model.Total)%</td>
+                                <td id="total-failed">@Model.Failed.AsPercentageOf(Model.Total)%</td>
+                                <td id="total-others">@Model.Others.AsPercentageOf(Model.Total)%</td>
                                 <td>-</td>
                             </tr>
                         </tbody>
