@@ -1,0 +1,119 @@
+﻿@using RazorEngine.Templating;
+@inherits TemplateBase<ReportUnit.Model.Report>
+@{Layout = "_Shared/_Layout";}
+<div class='header'>
+    <nav>
+        @Include("_Shared/_SideNav", Model.SideNavLinks)
+        <span class='file-name'>@Model.FileName</span>
+        <ul class='left'>
+            <li class='logo'>
+                <a href='http://reportunit.relevantcodes.com/'><span>ReportUnit</span></a>
+            </li>
+        </ul>
+        <ul class='right nav-right'>
+            <li class='nav-item'>
+                <a class='modal-trigger waves-effect waves-light run-info-icon tooltipped' data-position='bottom' data-tooltip='Run Info' href='#modal1'><i class='mdi-action-info-outline'></i></a>
+            </li>
+            <li class='nav-item'>v1.50.0</li>
+        </ul>
+    </nav>
+</div>
+<div class='main'>
+    <div class='main-wrap'>
+        @if (Model.Total == 0)
+        {
+            <div class='row no-tests'>
+                <div clas='col s12 m6 l4'>
+                    <div class='no-tests-message card-panel no-margin-v'>
+                        <p>
+                            No tests were found in @Model.FileName.
+                        </p>
+                        @if (!string.IsNullOrEmpty(Model.StatusMessage))
+                        {
+                            <pre>@Model.StatusMessage</pre>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class='row dashboard'>
+                <div class='col s12 m6 l4'>
+                    @Include("Report/_SuiteSummary")
+                </div>
+                <div class='col s12 m6 l4'>
+                    @Include("Report/_TestsSummary", Model)
+                </div>
+                <div class='col s12 m12 l4'>
+                    @Include("Report/_PassPercentage")
+                </div>
+            </div>
+            <div class='row'>
+                <div id='suites' class='suites'>
+                    <div class='col'>
+                        <div class='card-panel no-padding no-margin-v suite-list v-spacer'>
+                            @Include("Report/_SuiteFilters", Model)
+
+                            <ul id='suite-collection' class='no-margin-v'>
+                                @foreach (var suite in Model.TestSuiteList)
+                                {
+                                    @Include("Report/_Suite", suite)
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class='col'>
+                        <div class='card-panel suite-details no-margin-v v-spacer'>
+                            <h5 class='suite-name-displayed'></h5>
+                            <div class='details-container'></div>
+                        </div>
+                    </div>
+                </div>
+            </div>                                                                   
+        }
+    </div>
+</div>
+<div id='modal1' class='modal'>
+    <div class='modal-content'>
+        <h4><!--%FILENAME%--> RunInfo</h4>
+        <table class='bordered'>
+            <thead>
+                <tr>
+                    <th>Param</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>TestRunner</td>
+                    <td>@Model.TestRunner.ToString()</td>
+                </tr>
+                @if (Model.RunInfo != null) {
+                    foreach (var key in Model.RunInfo.Keys)
+                    {
+                        <tr>
+                            <td>@key</td>
+                            <td>@Model.RunInfo[key]</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class='modal-footer'>
+        <a href='#!' class='modal-action modal-close waves-effect waves-green btn-flat'>Close</a>
+    </div>
+    <div class='hidden total-tests'><!--%TOTALTESTS%--></div>
+    <div class='hidden total-passed'><!--%PASSED%--></div>
+    <div class='hidden total-failed'><!--%FAILED%--></div>
+    <div class='hidden total-inconclusive'><!--%INCONCLUSIVE%--></div>
+    <div class='hidden total-errors'><!--%ERRORS%--></div>
+    <div class='hidden total-skipped'><!--%SKIPPED%--></div>
+</div>
+<div id='dynamicModal' class='modal modal-trigger' in_duration='0' induration='0'>
+    <div class='modal-content'>
+        <h4></h4>
+        <pre></pre>
+    </div>
+</div>

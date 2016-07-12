@@ -1,13 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using ReportUnit.Parser;
 
 namespace ReportUnit.Model
 {
-    public class Report
+    public class Report : IRenderable
     {
         private List<Status> _statusList = new List<Status>();
         public IEnumerable<Status> StatusList
@@ -38,6 +35,11 @@ namespace ReportUnit.Model
         /// Error or other status messages
         /// </summary>
         public string StatusMessage { get; set; }
+
+        public string TemplateName
+        {
+            get { return "Report"; }
+        }
 
         /// <summary>
         /// File name generated that this data is for
@@ -83,7 +85,7 @@ namespace ReportUnit.Model
 
         public double Errors { get; set; }
 
-        public string SideNavLinks { get; set; }
+        public List<SideNavLink> SideNavLinks = new List<SideNavLink>();
 
         public Report()
         {

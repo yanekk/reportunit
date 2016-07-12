@@ -72,7 +72,7 @@ namespace ReportUnit
                     if (!Directory.GetParent(args[1]).Exists)
                         Directory.CreateDirectory(Directory.GetParent(args[1]).FullName);
 
-                    new ReportUnitService().CreateReport(args[0], Directory.GetParent(args[1]).FullName);
+                    new ReportUnitService(Directory.GetParent(args[1]).FullName).CreateReport(args[0]);
                     return;
                 }
 
@@ -87,7 +87,7 @@ namespace ReportUnit
 
                 if (Directory.Exists(args[0]) && Directory.Exists(args[1]))
                 {
-                    new ReportUnitService().CreateReport(args[0], args[1]);
+                    new ReportUnitService(args[1]).CreateReport(args[0]);
                 }
                 else
                 {
@@ -99,7 +99,7 @@ namespace ReportUnit
 
             if (File.Exists(args[0]) && (Path.GetExtension(args[0]).ToLower().Contains("xml") || Path.GetExtension(args[0]).ToLower().Contains("trx")))
             {
-                new ReportUnitService().CreateReport(args[0], Directory.GetParent(args[0]).FullName);
+                new ReportUnitService(Directory.GetParent(args[0]).FullName).CreateReport(args[0]);
                 return;
             }
 
@@ -109,7 +109,7 @@ namespace ReportUnit
                 return;
             }
 
-            new ReportUnitService().CreateReport(args[0], args[0]);
+            new ReportUnitService(args[0]).CreateReport(args[0]);
         }
 
         private static void CopyrightMessage()

@@ -1,0 +1,13 @@
+﻿@using RazorEngine.Templating;
+@inherits TemplateBase<System.Collections.Generic.List<ReportUnit.Model.SideNavLink>>
+<ul id='slide-out' class='side-nav fixed'>
+    @foreach (var sideNavLink in Model)
+    {
+        <li class="waves-effect report-item">
+            <a href="./@(sideNavLink.FileName).html">
+                <i class="mdi-action-assignment"></i>
+                <span class="sidenav-filename">@sideNavLink.FileName</span>
+            </a>
+        </li>
+    }
+</ul>

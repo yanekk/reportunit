@@ -1,0 +1,57 @@
+﻿@using System.Web
+@using RazorEngine.Templating;
+@inherits TemplateBase<ReportUnit.Model.Test>
+<tr class='@Model.Status.ToString().ToLower() test-status'>
+    <td class='test-name'>
+        <span class='name'>@Model.Name</span>
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <span class='description'>@Model.Description</span>
+        }
+    </td>
+    <td class='test-status @Model.Status.ToString().ToLower()'>
+        <span class='label @Model.Status.ToString().ToLower()'>@Model.Status.ToString()</span>
+    </td>
+    <td>
+        <div class='category-list'>
+            @foreach (var cat in Model.CategoryList)
+            {
+                <span class='label category'>@cat</span>
+            }
+        </div>
+    </td>
+    <td class="test-info">
+        @if (Model.StartTime != null || Model.EndTime != null)
+        {
+            <div><b>Start Time:</b> @Model.StartTime</div>
+            <div><b>Finish Time:</b> @Model.EndTime</div>
+        }
+    </td>
+    <td class='test-features hide @Model.GetCategories()'></td>
+</tr>
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <tr>
+        <td colspan='4'>
+            <pre style='font-weight: bold'>@Model.StatusMessage</pre>
+            @if (Model.ArtifactSet != null)
+            {
+                <div class="artifact-set">
+                    <h2>Artifacts: </h2>
+                    <ul class="artifact-set">
+                        @foreach (var artifact in Model.ArtifactSet.Artifacts)
+                        {
+                            <li>
+                                <a href="@artifact.FilePath" target="_blank">@artifact.FileName</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.StackTrace))
+            {
+                <pre>@Model.StackTrace</pre>
+            }
+        </td>
+    </tr>
+}

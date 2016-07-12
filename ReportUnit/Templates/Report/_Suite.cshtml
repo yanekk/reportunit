@@ -1,0 +1,37 @@
+﻿@using RazorEngine.Templating;
+@inherits TemplateBase<ReportUnit.Model.TestSuite>
+<li class='suite @Model.Status.ToString().ToLower()'>
+    <div class='suite-head'>
+        <div class='suite-name'>@Model.Name</div>
+        <div class='suite-result @Model.Status.ToString().ToLower() right label'>@Model.Status.ToString()</div>
+    </div>
+    <div class='suite-content hide'>
+        <span class='startedAt label green lighten-2 text-white'>@(Model.RunningTime.ToString(@"hh\:mm\:ss\.ff"))</span>
+        <div class='fixture-status-message'>
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <div class='suite-desc'>@Model.Description</div>
+            }
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class='suite-desc'>@Model.StatusMessage</div>
+            }
+        </div>
+        <table class='bordered'>
+            <thead>
+                <tr>
+                    <th>TestName</th>
+                    <th>Status</th>
+                    <th>Categories</th>
+                    <th>Info</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var test in Model.TestList)
+                {
+                    @Include("Report/_Test", test)
+                }
+            </tbody>
+        </table>
+    </div>
+</li>

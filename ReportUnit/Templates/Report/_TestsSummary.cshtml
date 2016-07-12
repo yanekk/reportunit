@@ -1,0 +1,14 @@
+﻿@using RazorEngine.Templating;
+@inherits TemplateBase<ReportUnit.Model.Report>
+<div class='card-panel'>
+    <div alt='Count of all failed tests' title='Count of all failed tests'>Tests Summary</div>
+    <div class='chart-box'>
+        <div class='text-centered' id='test-analysis'></div>
+    </div>
+    <div>
+        <span class='weight-light'><span class='test-pass-count weight-normal'>@Model.Passed</span> test(s) passed</span>
+    </div>
+    <div>
+        <span class='weight-light'><span class='test-fail-count weight-normal'>@Model.Failed</span> test(s) failed, <span class='test-others-count weight-normal'>@(Model.Total - (Model.Passed + Model.Failed))</span> others</span>
+    </div>
+</div>

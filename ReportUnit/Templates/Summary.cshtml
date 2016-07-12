@@ -1,144 +1,120 @@
 ﻿@using RazorEngine.Templating;
-@inherits TemplateBase<ReportUnit.Model.CompositeTemplate>
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <meta name='description' content=''>
-    <meta name='author' content=''>
-    <title>ReportUnit TestRunner Report</title>
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.2/css/materialize.min.css' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
-    <link href='https://cdn.rawgit.com/reportunit/reportunit/005dcf934c5a53e60b9ec88a2a118930b433c453/cdn/reportunit.css' type='text/css' rel='stylesheet' />
-</head>
-<body class='summary'>
-    <div class='header'>
-        <nav>
-            <ul id='slide-out' class='side-nav fixed'>
-                @Model.SideNavLinks
-            </ul>
-
-            <span class='file-name'>Executive Summary</span>
-
-            <ul class='left'>
-                <li class='logo'>
-                    <a href='http://reportunit.relevantcodes.com/'><span>ReportUnit</span></a>
-                </li>
-            </ul>
-
-            <div class='right hide-on-med-and-down nav-right'>
-                <div class='nav-item'>
-                    v1.50.0
-                </div>
+@inherits TemplateBase<ReportUnit.Model.Summary>
+@{Layout = "_Shared/_Layout";}
+<div class='header'>
+    <nav>
+        @Include("_Shared/_SideNav", Model.SideNavLinks)
+        <span class='file-name'>Executive Summary</span>
+        <ul class='left'>
+            <li class='logo'>
+                <a href='http://reportunit.relevantcodes.com/'><span>ReportUnit</span></a>
+            </li>
+        </ul>
+        <div class='right hide-on-med-and-down nav-right'>
+            <div class='nav-item'>
+                v1.50.0
             </div>
-        </nav>
-    </div>
-    <div class='main'>
-        <div class='main-wrap'>
-            <div class='row'>
-                <div class='col s12'>
-                    <div class='card-panel report-list no-margin-v'>
-                        <table class='table bordered'>
-                            <thead>
+        </div>
+    </nav>
+</div>
+
+<div class='main'>
+    <div class='main-wrap'>
+        <div class='row'>
+            <div class='col s12'>
+                <div class='card-panel report-list no-margin-v'>
+                    <table class='table bordered'>
+                        <thead>
+                            <tr>
+                                <th>File</th>
+                                <th>TestRunner</th>
+                                <th>Total Tests</th>
+                                <th>Passed</th>
+                                <th>Failed</th>
+                                <th>Others</th>
+                                <th>Quick Summary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{double totalPassed = 0;
+                                double totalFailed = 0;
+                                double totalOthers = 0;
+                            }
+
+                            @foreach (var report in Model.Reports)
+                            {
                                 <tr>
-                                    <th>File</th>
-                                    <th>TestRunner</th>
-                                    <th>Total Tests</th>
-                                    <th>Passed</th>
-                                    <th>Failed</th>
-                                    <th>Others</th>
-                                    <th>Quick Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{double totalPassed = 0;
-                                    double totalFailed = 0;
-                                    double totalOthers = 0;
-                                }
+                                    <td><a href='./@(report.FileName).html'>@report.FileName</a></td>
+                                    <td>@report.TestRunner</td>
+                                    <td>@report.Total</td>
+                                    <td>@report.Passed</td>
+                                    <td>@report.Failed</td>
+                                    <td>@(report.Inconclusive + report.Skipped + report.Errors)</td>
+                                    <td>
+                                        @{var total = report.Total;
+                                            var passed = report.Passed;
+                                            var failed = report.Failed;
+                                            var others = report.Total - (report.Passed + report.Failed);
 
-                                @foreach (var report in Model.ReportList)
-                                {
-                                    <tr>
-                                        <td><a href='./@(report.FileName).html'>@report.FileName</a></td>
-                                        <td>@report.TestRunner</td>
-                                        <td>@report.Total</td>
-                                        <td>@report.Passed</td>
-                                        <td>@report.Failed</td>
-                                        <td>@(report.Inconclusive + report.Skipped + report.Errors)</td>
-                                        <td>
-                                            @{var total = report.Total;
-                                                var passed = report.Passed;
-                                                var failed = report.Failed;
-                                                var others = report.Total - (report.Passed + report.Failed);
-
-                                                totalPassed += passed;
-                                                totalFailed += failed;
-                                                totalOthers += others;
-                                            }
-                                            @if (report.Total != 0)
-                                            {
-                                                <div class='progress2'>
-                                                    @if (passed != 0)
-                                                    {
-                                                        <div style='width: @((passed / total) * 100)%' class='progress-bar2 progress-bar-success progress-bar-striped'>
-                                                            <span class='sr-only'>@passed</span>
-                                                        </div>
-                                                    }
-                                                    @if (others != 0)
-                                                    {
-                                                        <div style='width: @((others / total) * 100)%' class='progress-bar2 progress-bar-warning progress-bar-striped'>
-                                                            <span class='sr-only'>@others</span>
-                                                        </div>
-                                                    }
-                                                    @if (failed != 0)
-                                                    {
-                                                        <div style='width: @((failed / total) * 100)%' class='progress-bar2 progress-bar-danger progress-bar-striped'>
-                                                            <span class='sr-only'>@failed</span>
-                                                        </div>
-                                                    }
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div class='progress2'>
-                                                    <div style='width: 0%' class='progress-bar2 progress-bar-success progress-bar-striped'>
-                                                        <span class='sr-only'>0</span>
+                                            totalPassed += passed;
+                                            totalFailed += failed;
+                                            totalOthers += others;
+                                        }
+                                        @if (report.Total != 0)
+                                        {
+                                            <div class='progress2'>
+                                                @if (passed != 0)
+                                                {
+                                                    <div style='width: @((passed / total) * 100)%' class='progress-bar2 progress-bar-success progress-bar-striped'>
+                                                        <span class='sr-only'>@passed</span>
                                                     </div>
-                                                </div>
-                                            }
-                                        </td>
-                                    </tr>
                                                 }
-                                <tr>
-                                    <td><span class='weight-normal'>Totals</span></td>
-                                    <td>-</td>
-                                    <td id='total-tests'>@Model.ReportList.SelectMany(x => x.TestSuiteList).SelectMany(x => x.TestList).Count()</td>
-                                    <td id='total-passed'>@totalPassed</td>
-                                    <td id='total-failed'>@totalFailed</td>
-                                    <td id='total-others'>@totalOthers</td>
-                                    <td>-</td>
+                                                @if (others != 0)
+                                                {
+                                                    <div style='width: @((others / total) * 100)%' class='progress-bar2 progress-bar-warning progress-bar-striped'>
+                                                        <span class='sr-only'>@others</span>
+                                                    </div>
+                                                }
+                                                @if (failed != 0)
+                                                {
+                                                    <div style='width: @((failed / total) * 100)%' class='progress-bar2 progress-bar-danger progress-bar-striped'>
+                                                        <span class='sr-only'>@failed</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class='progress2'>
+                                                <div style='width: 0%' class='progress-bar2 progress-bar-success progress-bar-striped'>
+                                                    <span class='sr-only'>0</span>
+                                                </div>
+                                            </div>
+                                        }
+                                    </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                            }
+                            <tr>
+                                <td><span class='weight-normal'>Totals</span></td>
+                                <td>-</td>
+                                <td id='total-tests'>@Model.Reports.SelectMany(x => x.TestSuiteList).SelectMany(x => x.TestList).Count()</td>
+                                <td id='total-passed'>@totalPassed</td>
+                                <td id='total-failed'>@totalFailed</td>
+                                <td id='total-others'>@totalOthers</td>
+                                <td>-</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    <div id='modal2' class='modal'>
-        <div class='modal-content'>
-            <h4>Console Log</h4>
-        </div>
-        <div class='modal-footer'>
-            <a href='#!' class='modal-action modal-close waves-effect waves-green btn-flat'>Close</a>
-        </div>
+</div>
+<div id='modal2' class='modal'>
+    <div class='modal-content'>
+        <h4>Console Log</h4>
     </div>
-</body>
-<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.2/js/materialize.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
-<script src='assets/reportunit.js' type='text/javascript'></script>
-
-</html>
+    <div class='modal-footer'>
+        <a href='#!' class='modal-action modal-close waves-effect waves-green btn-flat'>Close</a>
+    </div>
+</div>
