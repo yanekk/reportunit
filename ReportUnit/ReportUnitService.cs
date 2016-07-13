@@ -7,26 +7,53 @@ using ReportUnit.Logging;
 using ReportUnit.Model;
 using ReportUnit.Parser;
 using ReportUnit.Razor;
+using ReportUnit.Utils;
 
 namespace ReportUnit
 {
     class ReportUnitService
     {
-        private readonly string _outputDirectory;
-        private readonly Logger _logger = Logger.GetLogger();
-
+        private readonly DirectoryInfo _outputDirectory;
+        private readonly List<FileInfo> _inputFiles = new List<FileInfo>();
         private readonly TemplateEngine _templateEngine;
-        public ReportUnitService(string outputDirectory)
+
+        private readonly Logger _logger = Logger.GetLogger();
+        
+        private ReportUnitService(FileInfo inputFile, DirectoryInfo outputDirectory) : this(outputDirectory)
         {
-            _outputDirectory = outputDirectory;
-            _templateEngine = new TemplateEngine(_outputDirectory);
+            _inputFiles.Add(inputFile);
         }
 
-        public void CreateReport(string input)
+        private ReportUnitService(DirectoryInfo inputDirectory, DirectoryInfo outputDirectory) : this(outputDirectory)
         {
-        	var summary = new Summary();
+            _inputFiles.AddRange(inputDirectory
+                .GetFiles("*.xml", SearchOption.AllDirectories)
+                .OrderByDescending(f => f.CreationTime));
+        }
+
+        private ReportUnitService(DirectoryInfo outputDirectory)
+        {
+            _outputDirectory = outputDirectory;
+            _templateEngine = new TemplateEngine(_outputDirectory.FullName);
+        }
+
+        public static ReportUnitService GetInstanceByOptions(CommandLineOptions options)
+        {
+            if (options.InputDirectory != null)
+                return new ReportUnitService(options.InputDirectory, options.OutputDirectory);
+            if (options.InputFile != null)
+                return new ReportUnitService(options.InputFile, options.OutputDirectory);
+            throw new Exception("Invalid options provided");
+        }
+
+        public void CreateReport()
+        {
+            if (!_outputDirectory.Exists)
+                Directory.CreateDirectory(_outputDirectory.FullName);
+
+            var summary = new Summary();
 	
-        	foreach (var filePath in EnumerateFiles(input))
+        	foreach (var filePath in _inputFiles)
         	{
             	var testRunner = GetTestRunner(filePath.FullName);
         	    if (testRunner.Equals(TestRunner.Unknown))
@@ -37,9 +64,7 @@ namespace ReportUnit
         	}
 
             if (summary.Reports.Count > 1)
-            {
                 _templateEngine.Save(summary);
-            }
 
 			foreach (var report in summary.Reports)
             {
@@ -50,18 +75,6 @@ namespace ReportUnit
             CopyAssetFiles();
         }
 
-        private IEnumerable<FileInfo> EnumerateFiles(string path)
-        {
-            var attributes = File.GetAttributes(path);
-            return (FileAttributes.Directory & attributes) == FileAttributes.Directory
-                ? new DirectoryInfo(path)
-                    .GetFiles("*.xml", SearchOption.AllDirectories)
-                    .OrderByDescending(f => f.CreationTime)
-                    .ToArray()
-                : new DirectoryInfo(Directory.GetCurrentDirectory())
-                    .GetFiles(path);
-        }
-
         private void CopyArtifacts(Report report)
         {
             var allTests = report.TestSuiteList.SelectMany(suite => suite.TestList);
@@ -70,24 +83,24 @@ namespace ReportUnit
                 return;
 
             var artifactBaseDirectory = Path.Combine("Artifacts\\", report.FileName);
-            Directory.CreateDirectory(Path.Combine(_outputDirectory, artifactBaseDirectory));
+            Directory.CreateDirectory(Path.Combine(_outputDirectory.FullName, artifactBaseDirectory));
             foreach(var test in testsWithArtifacts)
             {
                 var artifactPath = Path.Combine(artifactBaseDirectory, test.ArtifactSet.DirectoryName);
-                Directory.CreateDirectory(Path.Combine(_outputDirectory, artifactPath));
+                Directory.CreateDirectory(Path.Combine(_outputDirectory.FullName, artifactPath));
                 foreach(var artifact in test.ArtifactSet.Artifacts)
                 {
                     artifact.FilePath = Path.Combine(artifactPath, artifact.FileName);
                     File.Copy(
                         Path.Combine(test.ArtifactSet.BasePath, artifact.FileName), 
-                        Path.Combine(_outputDirectory, artifact.FilePath), true);
+                        Path.Combine(_outputDirectory.FullName, artifact.FilePath), true);
                 }
             }
         }
 
         private void CopyAssetFiles()
         {
-            var targetDirectory = Path.Combine(_outputDirectory, "assets");
+            var targetDirectory = Path.Combine(_outputDirectory.FullName, "assets");
             Directory.CreateDirectory(targetDirectory);
             foreach (var sourceFile in Directory.EnumerateFiles(".\\assets"))
             {

@@ -108,6 +108,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Razor\TemplateEngine.cs" />
     <Compile Include="ReportUnitService.cs" />
+    <Compile Include="Utils\CommandLineOptions.cs" />
     <Compile Include="Utils\DateTimeHelper.cs" />
     <Compile Include="Utils\DoubleExtensions.cs" />
     <Compile Include="Utils\ReportUtil.cs" />
