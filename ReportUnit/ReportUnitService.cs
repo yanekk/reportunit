@@ -7,6 +7,7 @@ using ReportUnit.Logging;
 using ReportUnit.Model;
 using ReportUnit.Parser;
 using ReportUnit.Razor;
+using ReportUnit.Reporting;
 using ReportUnit.Utils;
 
 namespace ReportUnit
@@ -55,11 +56,11 @@ namespace ReportUnit
 	
         	foreach (var filePath in _inputFiles)
         	{
-            	var testRunner = GetTestRunner(filePath.FullName);
-        	    if (testRunner.Equals(TestRunner.Unknown))
+            	var testParser = GetTestParser(filePath.FullName);
+        	    if (testParser == null)
                     continue;
 
-        	    var report = Parse(testRunner, filePath.FullName);
+        	    var report = testParser.Parse(filePath.FullName);
                 summary.AddReport(report);
         	}
 
@@ -69,58 +70,20 @@ namespace ReportUnit
 			foreach (var report in summary.Reports)
             {
                 report.SideNavLinks = summary.SideNavLinks;
-                CopyArtifacts(report);
+                ArtifactsCopier.CopyTo(report, _outputDirectory);
                 _templateEngine.Save(report);
             }
-            CopyAssetFiles();
+            AssetsCopier.CopyTo(_outputDirectory);
         }
 
-        private void CopyArtifacts(Report report)
-        {
-            var allTests = report.TestSuiteList.SelectMany(suite => suite.TestList);
-            var testsWithArtifacts = allTests.Where(t => t.HasArtifacts()).ToList();
-            if (!testsWithArtifacts.Any())
-                return;
-
-            var artifactBaseDirectory = Path.Combine("Artifacts\\", report.FileName);
-            Directory.CreateDirectory(Path.Combine(_outputDirectory.FullName, artifactBaseDirectory));
-            foreach(var test in testsWithArtifacts)
-            {
-                var artifactPath = Path.Combine(artifactBaseDirectory, test.ArtifactSet.DirectoryName);
-                Directory.CreateDirectory(Path.Combine(_outputDirectory.FullName, artifactPath));
-                foreach(var artifact in test.ArtifactSet.Artifacts)
-                {
-                    artifact.FilePath = Path.Combine(artifactPath, artifact.FileName);
-                    File.Copy(
-                        Path.Combine(test.ArtifactSet.BasePath, artifact.FileName), 
-                        Path.Combine(_outputDirectory.FullName, artifact.FilePath), true);
-                }
-            }
-        }
-
-        private void CopyAssetFiles()
-        {
-            var targetDirectory = Path.Combine(_outputDirectory.FullName, "assets");
-            Directory.CreateDirectory(targetDirectory);
-            foreach (var sourceFile in Directory.EnumerateFiles(".\\assets"))
-            {
-                var fileName = Path.GetFileName(sourceFile);
-                var targetFile = Path.Combine(targetDirectory, fileName);
-                File.Copy(sourceFile, targetFile, true);
-            }
-        }
-
-        private TestRunner GetTestRunner(string inputFile)
+        private IParser GetTestParser(string inputFile)
         {
             var testRunner = new ParserFactory(inputFile).GetTestRunnerType();
             _logger.Info("The file " + inputFile + " contains " + Enum.GetName(typeof(TestRunner), testRunner) + " test results");
-            return testRunner;
-        }
+            if (testRunner == TestRunner.Unknown)
+                return null;
 
-        private Report Parse(TestRunner testRunner, string filePath)
-        {
-            var parser = (IParser)Assembly.GetExecutingAssembly().CreateInstance(string.Format("ReportUnit.Parser." + testRunner));
-            return parser.Parse(filePath);
+            return (IParser)Assembly.GetExecutingAssembly().CreateInstance(string.Format("ReportUnit.Parser." + testRunner));
         }
     }
 }
