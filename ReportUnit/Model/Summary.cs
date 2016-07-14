@@ -15,11 +15,6 @@ namespace ReportUnit.Model
 
         public List<SideNavLink> SideNavLinks = new List<SideNavLink>();
 
-        public Summary()
-        {
-            SideNavLinks.Add(new SideNavLink("Index"));
-        }
-
         public string TemplateName { get { return "Summary"; } }
         public string FileName { get { return "Index"; } }
 
@@ -41,6 +36,11 @@ namespace ReportUnit.Model
         public double Others
         {
             get { return Reports.Sum(r => r.Others); }
+        }
+
+        public void InsertIndexSideNavLink()
+        {
+            SideNavLinks.Insert(0, new SideNavLink("Index"));
         }
     }
 }

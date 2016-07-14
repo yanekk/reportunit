@@ -65,7 +65,10 @@ namespace ReportUnit
         	}
 
             if (summary.Reports.Count > 1)
+            {
+                summary.InsertIndexSideNavLink();
                 _templateEngine.Save(summary);
+            }
 
 			foreach (var report in summary.Reports)
             {

@@ -56,9 +56,6 @@ namespace ReportUnit.Utils
                 if (!Directory.Exists(input))
                     throw new Error("Input directory " + input + " not found.\n" + USAGE);
 
-                if (!Directory.Exists(output))
-                    throw new Error("Output directory " + input + " not found.\n" + USAGE);
-
                 InputDirectory = new DirectoryInfo(input);
                 OutputDirectory = new DirectoryInfo(output);
             }
