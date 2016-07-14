@@ -6,6 +6,7 @@ using System.Reflection;
 using ReportUnit.Logging;
 using ReportUnit.Model;
 using ReportUnit.Parser;
+using ReportUnit.Parsers;
 using ReportUnit.Razor;
 using ReportUnit.Reporting;
 using ReportUnit.Utils;
@@ -56,11 +57,11 @@ namespace ReportUnit
 	
         	foreach (var filePath in _inputFiles)
         	{
-            	var testParser = GetTestParser(filePath.FullName);
-        	    if (testParser == null)
+            	var testFileParser = GetTestFileParser(filePath.FullName);
+        	    if (testFileParser == null)
                     continue;
 
-        	    var report = testParser.Parse(filePath.FullName);
+        	    var report = testFileParser.Parse(filePath.FullName);
                 summary.AddReport(report);
         	}
 
@@ -79,14 +80,14 @@ namespace ReportUnit
             AssetsCopier.CopyTo(_outputDirectory);
         }
 
-        private IParser GetTestParser(string inputFile)
+        private ITestFileParser GetTestFileParser(string inputFile)
         {
-            var testRunner = new ParserFactory(inputFile).GetTestRunnerType();
-            _logger.Info("The file " + inputFile + " contains " + Enum.GetName(typeof(TestRunner), testRunner) + " test results");
-            if (testRunner == TestRunner.Unknown)
-                return null;
-
-            return (IParser)Assembly.GetExecutingAssembly().CreateInstance(string.Format("ReportUnit.Parser." + testRunner));
+            var parser = ParserFactory.GetParserFor(inputFile);
+            if (parser == null)
+                _logger.Info("The file " + inputFile + " doesn't contain test results");
+            else
+                _logger.Info(string.Format("The file {0} contain {1} test results", inputFile, parser.TypeName));
+            return parser;
         }
     }
 }

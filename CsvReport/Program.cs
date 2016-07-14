@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using ReportUnit.Parser;
+using ReportUnit.Parsers.NUnit;
 
 namespace CsvReport
 {
@@ -13,7 +14,7 @@ namespace CsvReport
 
             var filePathList = new DirectoryInfo(inputFolder).GetFiles("*.xml", SearchOption.AllDirectories)
                 .OrderByDescending(f => f.CreationTime);
-            var testParser = new NUnit();
+            var testParser = new NUnitTestFileParser();
 
             using (var csvReportFile = File.CreateText(outputFile))
             {

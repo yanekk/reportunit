@@ -4,13 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using ReportUnit.Model;
+using ReportUnit.Parsers.NUnit.NUnitParsers;
 using ReportUnit.Utils;
-using ReportUnit.Parser.NUnitParsers;
 
-namespace ReportUnit.Parser
+namespace ReportUnit.Parsers.NUnit
 {
-    public class NUnit : IParser
+    public class NUnitTestFileParser : ITestFileParser
     {
+        public string TypeName => "NUnit";
+
         public Report Parse(string resultsFile)
         {
             var doc = XDocument.Load(resultsFile);
@@ -19,7 +21,7 @@ namespace ReportUnit.Parser
             report.RunInfo = CreateRunInfo(doc, report, resultsFile);
             report.FileName = Path.GetFileNameWithoutExtension(resultsFile);
             report.AssemblyName = doc.Root.GetAttributeValueOrDefault("name");
-            report.TestRunner = TestRunner.NUnit;
+            report.TestParser = this;
 
             var suites = doc
                 .Descendants("test-suite")
@@ -54,7 +56,7 @@ namespace ReportUnit.Parser
                 return result;
 
             var runInfo = new RunInfo();
-            runInfo.TestRunner = report.TestRunner;
+            runInfo.TestParser = TypeName;
 
             XElement env = doc.Descendants("environment").First();
             runInfo.Info.Add("Test Results File", resultsFile);

@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-namespace ReportUnit.Parser
+namespace ReportUnit.Parsers.NUnit
 {
     public static class FocusHelper
     {

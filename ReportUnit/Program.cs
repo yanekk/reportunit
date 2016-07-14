@@ -1,4 +1,5 @@
-﻿using ReportUnit.Utils;
+﻿using ReportUnit.DependencyInjection;
+using ReportUnit.Utils;
 
 namespace ReportUnit
 {
@@ -24,6 +25,7 @@ namespace ReportUnit
         {
             try
             {
+                DI.Initialize();
                 var options = new CommandLineOptions(args);
                 var reportService = ReportUnitService.GetInstanceByOptions(options);
                 reportService.CreateReport();

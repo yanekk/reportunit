@@ -1,12 +1,12 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Xml.Linq;
 using ReportUnit.Model;
+using ReportUnit.Parser;
 using ReportUnit.Utils;
-using System.Collections.Generic;
 
-namespace ReportUnit.Parser.NUnitParsers
+namespace ReportUnit.Parsers.NUnit.NUnitParsers
 {
     public class NUnitTestCaseParser
     {

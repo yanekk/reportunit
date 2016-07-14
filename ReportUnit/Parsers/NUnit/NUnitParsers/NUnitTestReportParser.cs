@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using ReportUnit.Model;
 using ReportUnit.Utils;
 
-namespace ReportUnit.Parser.NUnitParsers
+namespace ReportUnit.Parsers.NUnit.NUnitParsers
 {
     public static class NUnitTestReportParser
     {

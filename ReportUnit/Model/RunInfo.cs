@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using ReportUnit.Parser;
+using ReportUnit.Parsers;
 
 namespace ReportUnit.Model
 {
@@ -23,6 +24,6 @@ namespace ReportUnit.Model
         /// <summary>
         /// The type of test runner that generated the data (eg NUnit, mstest)
         /// </summary>
-        public TestRunner TestRunner { get; set; }
+        public string TestParser { get; set; }
     }
 }

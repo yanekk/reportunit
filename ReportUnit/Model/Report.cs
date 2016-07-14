@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using ReportUnit.Parser;
+using ReportUnit.Parsers;
 
 namespace ReportUnit.Model
 {
@@ -46,7 +47,7 @@ namespace ReportUnit.Model
         /// </summary>
         public string FileName { get; set; }
 
-        public TestRunner TestRunner { get; set; }
+        public ITestFileParser TestParser { get; set; }
 
         public Dictionary<string, string> RunInfo { get; set; }
 

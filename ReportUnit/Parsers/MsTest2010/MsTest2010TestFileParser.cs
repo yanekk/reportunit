@@ -1,23 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
-using System.Threading.Tasks;
-
-using RazorEngine;
-using RazorEngine.Configuration;
-using RazorEngine.Templating;
-using RazorEngine.Text;
-
-using ReportUnit.Model;
-using ReportUnit.Utils;
 using ReportUnit.Logging;
+using ReportUnit.Model;
+using ReportUnit.Parser;
+using ReportUnit.Utils;
 
-namespace ReportUnit.Parser
+namespace ReportUnit.Parsers.MsTest2010
 {
-    internal class MSTest2010 : IParser
+    public class MsTest2010TestFileParser : ITestFileParser
     {
         //private string resultsFile;
         private XNamespace xns = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
@@ -30,7 +22,7 @@ namespace ReportUnit.Parser
             Report report = new Report();
 
             report.FileName = Path.GetFileNameWithoutExtension(resultsFile);
-            report.TestRunner = TestRunner.MSTest2010;
+            report.TestParser = this;
 
             // run-info & environment values -> RunInfo
             var runInfo = CreateRunInfo(doc, report).Info;
@@ -128,6 +120,8 @@ namespace ReportUnit.Parser
             return report;
         }
 
+        public string TypeName => "MsTest2010";
+
         private static void AddTestToSuite(Report report, Test test, string suiteName)
         {
             var testSuite = report.TestSuiteList.SingleOrDefault(t => t.Name.Equals(suiteName));
@@ -148,7 +142,7 @@ namespace ReportUnit.Parser
             // run-info & environment values -> RunInfo
             RunInfo runInfo = new RunInfo();
 
-            runInfo.TestRunner = report.TestRunner;
+            runInfo.TestParser = TypeName;
             runInfo.Info.Add("TestRunner Version", "");
             runInfo.Info.Add("File", report.FileName);
 

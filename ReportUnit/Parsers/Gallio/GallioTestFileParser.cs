@@ -2,22 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
-using System.Threading.Tasks;
-
-using RazorEngine;
-using RazorEngine.Configuration;
-using RazorEngine.Templating;
-using RazorEngine.Text;
-
+using ReportUnit.Logging;
 using ReportUnit.Model;
 using ReportUnit.Utils;
-using ReportUnit.Logging;
 
-namespace ReportUnit.Parser
+namespace ReportUnit.Parsers.Gallio
 {
-    internal class Gallio : IParser
+    public class GallioTestFileParser : ITestFileParser
     {
         private string resultsFile;
         private XNamespace xns = "http://www.gallio.org/";
@@ -33,7 +25,7 @@ namespace ReportUnit.Parser
 
             report.FileName = Path.GetFileNameWithoutExtension(resultsFile);
             report.AssemblyName = doc.Descendants(xns + "files").First().Descendants(xns + "file").First().Value;
-            report.TestRunner = TestRunner.Gallio;
+            report.TestParser = this;
 
             // run-info & environment values -> RunInfo
             var runInfo = CreateRunInfo(doc, report).Info;
@@ -133,12 +125,14 @@ namespace ReportUnit.Parser
             return report;
         }
 
+        public string TypeName => "Gallio";
+
         private RunInfo CreateRunInfo(XDocument doc, Report report)
         {
             // run-info & environment values -> RunInfo
             RunInfo runInfo = new RunInfo();
 
-            runInfo.TestRunner = report.TestRunner;
+            runInfo.TestParser = TypeName;
             runInfo.Info.Add("File", report.AssemblyName);
 
             var children = doc.Descendants(xns + "children").First();
