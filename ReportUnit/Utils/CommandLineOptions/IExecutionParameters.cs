@@ -6,5 +6,6 @@ namespace ReportUnit.Utils.CommandLineOptions
     {
         FileInfo[] GetInputFiles();
         DirectoryInfo GetOutputDirectory();
+        string GetEngineName();
     }
 }

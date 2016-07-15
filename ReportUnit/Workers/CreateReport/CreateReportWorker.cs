@@ -1,6 +1,5 @@
 ﻿using System;
 using ReportUnit.Logging;
-using ReportUnit.Reporting;
 using ReportUnit.Utils.CommandLineOptions;
 
 namespace ReportUnit.Workers.CreateReport
@@ -27,6 +26,7 @@ namespace ReportUnit.Workers.CreateReport
             {
                 var executionParameters = _commandLineOptionsParserService.Parse(args);
                 _reportingService.CreateReport(
+                    executionParameters.GetEngineName(),
                     executionParameters.GetInputFiles(),
                     executionParameters.GetOutputDirectory());
             }

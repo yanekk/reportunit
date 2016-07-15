@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using ReportUnit.Model;
 
-namespace ReportUnit.Reporting
+namespace ReportUnit.ReportEngines.Html.Helpers
 {
     internal static class ArtifactsCopier
     {

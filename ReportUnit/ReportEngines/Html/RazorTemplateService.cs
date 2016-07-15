@@ -1,19 +1,19 @@
 ﻿using System.IO;
-using RazorEngine.Templating;
 using System.Linq;
 using System.Reflection;
 using RazorEngine.Configuration;
+using RazorEngine.Templating;
 using RazorEngine.Text;
 using ReportUnit.Model;
 
-namespace ReportUnit.Razor
+namespace ReportUnit.ReportEngines.Html
 {
-    public class TemplateEngine
+    public class RazorTemplateService
     {
         private readonly string _outputDirectory;
         private readonly IRazorEngineService _razor;
 
-        public TemplateEngine(string outputDirectory)
+        public RazorTemplateService(string templatesNamespace, string outputDirectory)
         {
             _outputDirectory = outputDirectory;
             var templateConfig = new TemplateServiceConfiguration
@@ -30,9 +30,8 @@ namespace ReportUnit.Razor
 
             foreach (var templateName in templateNames.Where(name => name.EndsWith(".cshtml")))
             {
-                var nameSpace = "ReportUnit.Templates.";
                 var fileName = Path
-                    .GetFileNameWithoutExtension(templateName.Remove(0, nameSpace.Length))
+                    .GetFileNameWithoutExtension(templateName.Remove(0, templatesNamespace.Length + 1))
                     .Replace('.', '/');
                 _razor.AddTemplate(fileName, GetStringResource(templateName));
                 _razor.Compile(fileName);
@@ -46,7 +45,7 @@ namespace ReportUnit.Razor
             File.WriteAllText(Path.Combine(_outputDirectory, model.FileName + ".html"), html);
         }
 
-        public static string GetStringResource(string name)
+        private string GetStringResource(string name)
         {
             using (var stream = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(name)))
             {

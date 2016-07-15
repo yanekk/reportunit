@@ -23,5 +23,10 @@ namespace ReportUnit.Utils.CommandLineOptions
         {
             return _outputDirectory;
         }
+
+        public string GetEngineName()
+        {
+            return "Html";
+        }
     }
 }

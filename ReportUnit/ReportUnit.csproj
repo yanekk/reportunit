@@ -87,11 +87,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="ReportEngines\Html\HtmlReportingEngine.cs" />
+    <Compile Include="ReportEngines\IReportingEngineResolvingService.cs" />
+    <Compile Include="ReportEngines\IReportingEngine.cs" />
+    <Compile Include="ReportEngines\ReportingEngineResolvingService.cs" />
     <Compile Include="Workers\CreateReport\CreateReportWorker.cs" />
     <Compile Include="DependencyInjection\DI.cs" />
     <Compile Include="DependencyInjection\ParserResolverInstaller.cs" />
     <Compile Include="Workers\CreateReport\ICreateReportWorker.cs" />
-    <Compile Include="Reporting\IReportingService.cs" />
+    <Compile Include="Workers\CreateReport\IReportingService.cs" />
     <Compile Include="Logging\Level.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\Logger.cs" />
@@ -123,10 +127,10 @@
     <Compile Include="Parsers\ParserResolvingService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Razor\TemplateEngine.cs" />
-    <Compile Include="Reporting\ArtifactsCopier.cs" />
-    <Compile Include="Reporting\AssetsCopier.cs" />
-    <Compile Include="Reporting\ReportingService.cs" />
+    <Compile Include="ReportEngines\Html\RazorTemplateService.cs" />
+    <Compile Include="ReportEngines\Html\Helpers\ArtifactsCopier.cs" />
+    <Compile Include="ReportEngines\Html\Helpers\AssetsCopier.cs" />
+    <Compile Include="Workers\CreateReport\ReportingService.cs" />
     <Compile Include="Utils\CommandLineOptions\CommandLineOptionsParserService.cs" />
     <Compile Include="Utils\DoubleExtensions.cs" />
     <Compile Include="Utils\CommandLineOptions\ExecutionParameters.cs" />
@@ -139,18 +143,18 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Readme.md" />
-    <EmbeddedResource Include="Templates\Report.cshtml" />
-    <EmbeddedResource Include="Templates\Summary.cshtml" />
-    <EmbeddedResource Include="Templates\_Shared\_SideNav.cshtml" />
-    <EmbeddedResource Include="Templates\_Shared\_Layout.cshtml" />
-    <None Include="Templates\Web.config">
+    <EmbeddedResource Include="ReportEngines\Html\Templates\Report.cshtml" />
+    <EmbeddedResource Include="ReportEngines\Html\Templates\Summary.cshtml" />
+    <EmbeddedResource Include="ReportEngines\Html\Templates\_Shared\_SideNav.cshtml" />
+    <EmbeddedResource Include="ReportEngines\Html\Templates\_Shared\_Layout.cshtml" />
+    <None Include="ReportEngines\Html\Templates\Web.config">
       <SubType>Designer</SubType>
     </None>
-    <EmbeddedResource Include="Templates\Report\_SuiteSummary.cshtml" />
-    <EmbeddedResource Include="Templates\Report\_TestsSummary.cshtml" />
-    <EmbeddedResource Include="Templates\Report\_SuiteFilters.cshtml" />
-    <EmbeddedResource Include="Templates\Report\_Suite.cshtml" />
-    <EmbeddedResource Include="Templates\Report\_Test.cshtml" />
+    <EmbeddedResource Include="ReportEngines\Html\Templates\Report\_SuiteSummary.cshtml" />
+    <EmbeddedResource Include="ReportEngines\Html\Templates\Report\_TestsSummary.cshtml" />
+    <EmbeddedResource Include="ReportEngines\Html\Templates\Report\_SuiteFilters.cshtml" />
+    <EmbeddedResource Include="ReportEngines\Html\Templates\Report\_Suite.cshtml" />
+    <EmbeddedResource Include="ReportEngines\Html\Templates\Report\_Test.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\reportunit.css">
@@ -159,7 +163,7 @@
     <Content Include="assets\reportunit.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Templates\Report\_PassPercentage.cshtml" />
+    <EmbeddedResource Include="ReportEngines\Html\Templates\Report\_PassPercentage.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

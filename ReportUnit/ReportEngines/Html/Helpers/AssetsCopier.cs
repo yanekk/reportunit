@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace ReportUnit.Reporting
+namespace ReportUnit.ReportEngines.Html.Helpers
 {
     internal static class AssetsCopier
     {

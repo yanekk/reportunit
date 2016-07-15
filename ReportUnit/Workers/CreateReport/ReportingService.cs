@@ -1,27 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using ReportUnit.Logging;
 using ReportUnit.Model;
 using ReportUnit.Parsers;
-using ReportUnit.Razor;
+using ReportUnit.ReportEngines;
 
-namespace ReportUnit.Reporting
+namespace ReportUnit.Workers.CreateReport
 {
     public class ReportingService : IReportingService
     {
         private readonly IParserResolvingService _parserResolvingService;
+        private readonly IReportingEngineResolvingService _reportingEngineResolvingService;
         private readonly ILogger _logger;
 
-        public ReportingService(IParserResolvingService parserResolvingService, ILogger logger)
+        public ReportingService(
+            IParserResolvingService parserResolvingService, 
+            IReportingEngineResolvingService reportingEngineResolvingService,
+            ILogger logger)
         {
             _parserResolvingService = parserResolvingService;
+            _reportingEngineResolvingService = reportingEngineResolvingService;
             _logger = logger;
         }
 
-        public void CreateReport(IEnumerable<FileInfo> inputFiles, DirectoryInfo outputDirectory)
+        public void CreateReport(string reportingEngineName, IEnumerable<FileInfo> inputFiles, DirectoryInfo outputDirectory)
         {
-            var templateEngine = new TemplateEngine(outputDirectory.FullName);
-
             if (!outputDirectory.Exists)
                 Directory.CreateDirectory(outputDirectory.FullName);
 
@@ -37,19 +41,17 @@ namespace ReportUnit.Reporting
                 summary.AddReport(report);
         	}
 
-            if (summary.Reports.Count > 1)
-            {
-                summary.InsertIndexSideNavLink();
-                templateEngine.Save(summary);
-            }
+            var reportingEngine = GetReportingEngine(reportingEngineName);
+            reportingEngine.CreateReport(summary, outputDirectory);
+        }
 
-			foreach (var report in summary.Reports)
-            {
-                report.SideNavLinks = summary.SideNavLinks;
-                ArtifactsCopier.CopyTo(report, outputDirectory);
-                templateEngine.Save(report);
-            }
-            AssetsCopier.CopyTo(outputDirectory);
+        private IReportingEngine GetReportingEngine(string reportingEngineName)
+        {
+            var reportingEngine = _reportingEngineResolvingService.ResolveByName(reportingEngineName);
+            if (reportingEngine == null)
+                throw new Exception($"Reporting engine {reportingEngineName} not found, available engines: " +
+                                    string.Join(", ", _reportingEngineResolvingService.AvailableEngineNames));
+            return reportingEngine;
         }
 
         private ITestFileParser GetTestFileParser(string inputFile)
