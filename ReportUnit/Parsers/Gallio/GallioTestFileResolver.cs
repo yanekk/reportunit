@@ -1,11 +1,10 @@
 ﻿using System.Xml;
-using ReportUnit.Parser;
 
 namespace ReportUnit.Parsers.Gallio
 {
-    public class GallioTestFileResolver : ParserResolverFor<GallioTestFileParser>, ITestFileResolver
+    public class GallioTestFileParserResolver : ParserResolverFor<GallioTestFileParser>, ITestFileParserResolver
     {
-        protected override string AllowedFileExtension => "xml";
+        public override string AllowedFileExtension => "xml";
 
         protected override bool IsHeaderCompatibile(XmlDocument document)
         {

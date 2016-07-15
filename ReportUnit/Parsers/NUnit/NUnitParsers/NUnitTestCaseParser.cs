@@ -3,7 +3,6 @@ using System.Linq;
 using System.Web;
 using System.Xml.Linq;
 using ReportUnit.Model;
-using ReportUnit.Parser;
 using ReportUnit.Utils;
 
 namespace ReportUnit.Parsers.NUnit.NUnitParsers

@@ -12,6 +12,11 @@ namespace ReportUnit.DependencyInjection
             _container.Install(new ParserResolverInstaller());
         }
 
+        public static TResolvable Resolve<TResolvable>()
+        {
+            return _container.Resolve<TResolvable>();
+        }
+
         public static IEnumerable<TResolvable> ResolveAll<TResolvable>()
         {
             return _container.ResolveAll<TResolvable>();

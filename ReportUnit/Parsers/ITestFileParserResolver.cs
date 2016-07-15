@@ -1,8 +1,9 @@
 ﻿namespace ReportUnit.Parsers
 {
-    public interface ITestFileResolver
+    public interface ITestFileParserResolver
     {
         bool IsCompatibile(string filePath);
         ITestFileParser GetParser();
+        string AllowedFileExtension { get; }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System.Xml;
-using ReportUnit.Parser;
 
 namespace ReportUnit.Parsers.MsTest2010
 {
-    public class MsTest2010TestFileResolver : ParserResolverFor<MsTest2010TestFileParser>, ITestFileResolver
+    public class MsTest2010TestFileParserResolver : ParserResolverFor<MsTest2010TestFileParser>, ITestFileParserResolver
     {
-        protected override string AllowedFileExtension => "trx";
+        public override string AllowedFileExtension => "trx";
 
         protected override bool IsHeaderCompatibile(XmlDocument document)
         {

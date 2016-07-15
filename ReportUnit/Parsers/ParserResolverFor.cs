@@ -1,13 +1,12 @@
 ﻿using System.IO;
 using System.Xml;
-using ReportUnit.Parsers;
 
-namespace ReportUnit.Parser
+namespace ReportUnit.Parsers
 {
     public abstract class ParserResolverFor<TTestFileParser>
         where TTestFileParser : ITestFileParser, new()
     {
-        protected abstract string AllowedFileExtension { get; }
+        public abstract string AllowedFileExtension { get; }
 
         public bool IsCompatibile(string filePath)
         {

@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using ReportUnit.Parser;
 using ReportUnit.Parsers.NUnit;
 
 namespace CsvReport

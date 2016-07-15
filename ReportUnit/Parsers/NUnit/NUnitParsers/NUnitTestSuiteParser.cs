@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Xml.Linq;
 using ReportUnit.Model;
-using ReportUnit.Parser;
 using ReportUnit.Utils;
 
 namespace ReportUnit.Parsers.NUnit.NUnitParsers

@@ -1,11 +1,10 @@
 ﻿using System.Xml;
-using ReportUnit.Parser;
 
 namespace ReportUnit.Parsers.NUnit
 {
-    public class NUnitTestFileResolver : ParserResolverFor<NUnitTestFileParser>, ITestFileResolver
+    public class NUnitTestFileParserResolver : ParserResolverFor<NUnitTestFileParser>, ITestFileParserResolver
     {
-        protected override string AllowedFileExtension => "xml";
+        public override string AllowedFileExtension => "xml";
 
         protected override bool IsHeaderCompatibile(XmlDocument document)
         {

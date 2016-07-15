@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-
-using ReportUnit.Parser;
 using ReportUnit.Parsers;
 
 namespace ReportUnit.Model

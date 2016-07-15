@@ -4,7 +4,6 @@ using System.Linq;
 using System.Xml.Linq;
 using ReportUnit.Logging;
 using ReportUnit.Model;
-using ReportUnit.Parser;
 using ReportUnit.Utils;
 
 namespace ReportUnit.Parsers.MsTest2010

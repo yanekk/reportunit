@@ -1,5 +1,6 @@
 ﻿using ReportUnit.DependencyInjection;
-using ReportUnit.Utils;
+using ReportUnit.Utils.CommandLineOptions;
+using ReportUnit.Workers.CreateReport;
 
 namespace ReportUnit
 {
@@ -26,11 +27,10 @@ namespace ReportUnit
             try
             {
                 DI.Initialize();
-                var options = new CommandLineOptions(args);
-                var reportService = ReportUnitService.GetInstanceByOptions(options);
-                reportService.CreateReport();
+                var worker = DI.Resolve<ICreateReportWorker>();
+                worker.Execute(args);
             }
-            catch (CommandLineOptions.Error error)
+            catch (CommandLineOptionsParserService.Error error)
             {
                 Logger.Error(error.Message);
             }

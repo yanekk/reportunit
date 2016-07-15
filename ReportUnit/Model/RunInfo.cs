@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using ReportUnit.Parser;
-using ReportUnit.Parsers;
+﻿using System.Collections.Generic;
 
 namespace ReportUnit.Model
 {
