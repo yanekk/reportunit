@@ -1,6 +1,6 @@
 ﻿namespace ReportUnit.Logging
 {
-    internal enum Level
+    public enum Level
     {
         Debug,
         Info,

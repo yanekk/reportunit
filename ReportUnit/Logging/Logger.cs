@@ -1,42 +1,28 @@
-﻿namespace ReportUnit.Logging
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+﻿using System;
+using System.Collections.Generic;
 
-    internal class Logger
+namespace ReportUnit.Logging
+{
+    public class Logger : ILogger
     {
-        private Queue<Log> queue = new Queue<Log>();
+        private readonly Queue<Log> _queue = new Queue<Log>();
 
         public void Log(Level level, string message)
         {
-            var log = new Log();
-
-            log.Timestamp = DateTime.Now;
-            log.Level = level;
-            log.Message = message;
+            var log = new Log
+            {
+                Timestamp = DateTime.Now,
+                Level = level,
+                Message = message
+            };
 
             Console.WriteLine(log.ToString());
-
-            queue.Enqueue(log);
+            _queue.Enqueue(log);
         }
 
         public Queue<Log> GetLogs()
         {
-            return queue;
-        }
-
-        public string GetLogsAsString()
-        {
-            string logs = "";
-
-            foreach (Log log in queue)
-            {
-                logs += log.ToString() + "<br />";
-            }
-
-            return logs;
+            return _queue;
         }
 
         public void Debug(string message)
@@ -62,20 +48,6 @@
         public void Fatal(string message)
         {
             Log(Level.Fatal, message);
-        }
-
-        private static Logger instance;
-
-        private Logger() { }
-
-        public static Logger GetLogger()
-        {
-            if (instance == null)
-            {
-                instance = new Logger();
-            }
-
-            return instance;
         }
     }
 }

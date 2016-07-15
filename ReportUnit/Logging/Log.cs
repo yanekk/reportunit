@@ -1,11 +1,8 @@
-﻿namespace ReportUnit.Logging
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+﻿using System;
 
-    internal class Log
+namespace ReportUnit.Logging
+{
+    public class Log
     {
         public DateTime Timestamp;
         public Level Level;
@@ -13,9 +10,7 @@
 
         public override string ToString()
         {
-            return String.Format("[{0}][{1}] {2}", Timestamp.ToString("yyyy.MM.dd HH:mm:ss"), Level.ToString(), Message);
+            return String.Format("[{0}][{1}] {2}", Timestamp.ToString("yyyy.MM.dd HH:mm:ss"), Level, Message);
         }
-
-        public Log() { }
     }
 }

@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using ReportUnit.Logging;
 using ReportUnit.Model;
 using ReportUnit.Utils;
 
@@ -11,8 +10,7 @@ namespace ReportUnit.Parsers.MsTest2010
     public class MsTest2010TestFileParser : ITestFileParser
     {
         //private string resultsFile;
-        private XNamespace xns = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
-        private Logger logger = Logger.GetLogger();
+        private readonly XNamespace xns = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
 
         public Report Parse(string resultsFile)
         {

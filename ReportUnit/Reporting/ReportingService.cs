@@ -10,11 +10,12 @@ namespace ReportUnit.Reporting
     public class ReportingService : IReportingService
     {
         private readonly IParserResolvingService _parserResolvingService;
-        private readonly Logger _logger = Logger.GetLogger();
+        private readonly ILogger _logger;
 
-        public ReportingService(IParserResolvingService parserResolvingService)
+        public ReportingService(IParserResolvingService parserResolvingService, ILogger logger)
         {
             _parserResolvingService = parserResolvingService;
+            _logger = logger;
         }
 
         public void CreateReport(IEnumerable<FileInfo> inputFiles, DirectoryInfo outputDirectory)

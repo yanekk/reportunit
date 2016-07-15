@@ -2,6 +2,7 @@
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using ReportUnit.Logging;
 using ReportUnit.Parsers;
 using ReportUnit.Reporting;
 using ReportUnit.Utils.CommandLineOptions;
@@ -19,6 +20,7 @@ namespace ReportUnit.DependencyInjection
             container.Register(Component.For<IReportingService>().ImplementedBy<ReportingService>());
             container.Register(Component.For<ICreateReportWorker>().ImplementedBy<CreateReportWorker>());
             container.Register(Component.For<ICommandLineOptionsParserService>().ImplementedBy<CommandLineOptionsParserService>());
+            container.Register(Component.For<ILogger>().ImplementedBy<Logger>());
         }
     }
 }

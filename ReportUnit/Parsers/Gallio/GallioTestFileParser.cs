@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using ReportUnit.Logging;
 using ReportUnit.Model;
 using ReportUnit.Utils;
 
@@ -11,17 +10,13 @@ namespace ReportUnit.Parsers.Gallio
 {
     public class GallioTestFileParser : ITestFileParser
     {
-        private string resultsFile;
-        private XNamespace xns = "http://www.gallio.org/";
-        private Logger logger = Logger.GetLogger();
+        private readonly XNamespace xns = "http://www.gallio.org/";
 
         public Report Parse(string resultsFile)
         {
-            this.resultsFile = resultsFile;
+            var doc = XDocument.Load(resultsFile);
 
-            XDocument doc = XDocument.Load(resultsFile);
-
-            Report report = new Report();
+            var report = new Report();
 
             report.FileName = Path.GetFileNameWithoutExtension(resultsFile);
             report.AssemblyName = doc.Descendants(xns + "files").First().Descendants(xns + "file").First().Value;

@@ -1,5 +1,6 @@
-﻿using ReportUnit.Reporting;
-using ReportUnit.Utils;
+﻿using System;
+using ReportUnit.Logging;
+using ReportUnit.Reporting;
 using ReportUnit.Utils.CommandLineOptions;
 
 namespace ReportUnit.Workers.CreateReport
@@ -8,19 +9,36 @@ namespace ReportUnit.Workers.CreateReport
     {
         private readonly IReportingService _reportingService;
         private readonly ICommandLineOptionsParserService _commandLineOptionsParserService;
+        private readonly ILogger _logger;
 
-        public CreateReportWorker(IReportingService reportingService, ICommandLineOptionsParserService commandLineOptionsParserService)
+        public CreateReportWorker(
+            IReportingService reportingService, 
+            ICommandLineOptionsParserService commandLineOptionsParserService,
+            ILogger logger)
         {
             _reportingService = reportingService;
             _commandLineOptionsParserService = commandLineOptionsParserService;
+            _logger = logger;
         }
 
         public void Execute(string[] args)
         {
-            var executionParameters = _commandLineOptionsParserService.Parse(args);
-            _reportingService.CreateReport(
-                executionParameters.GetInputFiles(), 
-                executionParameters.GetOutputDirectory());
+            try
+            {
+                var executionParameters = _commandLineOptionsParserService.Parse(args);
+                _reportingService.CreateReport(
+                    executionParameters.GetInputFiles(),
+                    executionParameters.GetOutputDirectory());
+            }
+            catch (CommandLineOptionsParserService.Error error)
+            {
+                _logger.Error(error.Message);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                _logger.Error(e.StackTrace);
+            }
         }
     }
 }

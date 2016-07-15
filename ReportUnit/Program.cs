@@ -1,16 +1,10 @@
 ﻿using ReportUnit.DependencyInjection;
-using ReportUnit.Utils.CommandLineOptions;
 using ReportUnit.Workers.CreateReport;
 
 namespace ReportUnit
 {
-    using System;
-    using Logging;
-
     class Program
     {
-        private static readonly Logger Logger = Logger.GetLogger();
-
         /// <summary>
         /// Entry point
         /// </summary>
@@ -22,23 +16,11 @@ namespace ReportUnit
         ///     Type 3: reportunit "input.xml" "output.html"
         ///         args.length = 2 && args[0] is xml-input && args[1] is html-output
         /// </param>
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            try
-            {
-                DI.Initialize();
-                var worker = DI.Resolve<ICreateReportWorker>();
-                worker.Execute(args);
-            }
-            catch (CommandLineOptionsParserService.Error error)
-            {
-                Logger.Error(error.Message);
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e.Message);
-                Logger.Error(e.StackTrace);
-            }
+            DI.Initialize();
+            var worker = DI.Resolve<ICreateReportWorker>();
+            worker.Execute(args);
         }
     }
 }
