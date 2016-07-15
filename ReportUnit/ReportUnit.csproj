@@ -44,6 +44,10 @@
       <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.core, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.dll</HintPath>
       <Private>True</Private>
@@ -87,10 +91,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="ReportEngines\Csv\CsvReportingEngine.cs" />
     <Compile Include="ReportEngines\Html\HtmlReportingEngine.cs" />
     <Compile Include="ReportEngines\IReportingEngineResolvingService.cs" />
     <Compile Include="ReportEngines\IReportingEngine.cs" />
     <Compile Include="ReportEngines\ReportingEngineResolvingService.cs" />
+    <Compile Include="Utils\CommandLineOptions\CommandLineOptions.cs" />
+    <Compile Include="Utils\ResourceHelper.cs" />
     <Compile Include="Workers\CreateReport\CreateReportWorker.cs" />
     <Compile Include="DependencyInjection\DI.cs" />
     <Compile Include="DependencyInjection\ParserResolverInstaller.cs" />
@@ -157,12 +164,8 @@
     <EmbeddedResource Include="ReportEngines\Html\Templates\Report\_Test.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\reportunit.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\reportunit.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="ReportEngines\Html\Assets\reportunit.css" />
+    <EmbeddedResource Include="ReportEngines\Html\Assets\reportunit.js" />
     <EmbeddedResource Include="ReportEngines\Html\Templates\Report\_PassPercentage.cshtml" />
   </ItemGroup>
   <ItemGroup />

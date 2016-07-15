@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportUnit", "ReportUnit\Re
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{60A25F52-0AB8-4A8F-A175-FA1FE2E0FA61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvReport", "CsvReport\CsvReport.csproj", "{F33BD05A-8FDB-4ACC-BE3F-5703FD1FE7DC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,10 +17,6 @@ Global
 		{12B65E5C-465A-4EB5-BCDB-0F79224A9BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12B65E5C-465A-4EB5-BCDB-0F79224A9BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12B65E5C-465A-4EB5-BCDB-0F79224A9BCF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F33BD05A-8FDB-4ACC-BE3F-5703FD1FE7DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F33BD05A-8FDB-4ACC-BE3F-5703FD1FE7DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F33BD05A-8FDB-4ACC-BE3F-5703FD1FE7DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F33BD05A-8FDB-4ACC-BE3F-5703FD1FE7DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,7 +10,8 @@ namespace ReportUnit.ReportEngines.Html
 
         public void CreateReport(Summary summary, DirectoryInfo outputDirectory)
         {
-            var templatesNamespace = GetType().Namespace + ".Templates";
+            var engineNamespace = GetType().Namespace;
+            var templatesNamespace = engineNamespace + ".Templates";
             var templateService = new RazorTemplateService(templatesNamespace, outputDirectory.FullName);
             if (summary.Reports.Count > 1)
             {
@@ -24,7 +25,8 @@ namespace ReportUnit.ReportEngines.Html
                 ArtifactsCopier.CopyTo(report, outputDirectory);
                 templateService.Save(report);
             }
-            AssetsCopier.CopyTo(outputDirectory);
+            var assetsNamespace = engineNamespace + ".Assets";
+            AssetsCopier.CopyTo(assetsNamespace, outputDirectory);
         }
     }
 }
