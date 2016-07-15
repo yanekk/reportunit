@@ -128,13 +128,11 @@
     <Compile Include="Reporting\AssetsCopier.cs" />
     <Compile Include="Reporting\ReportingService.cs" />
     <Compile Include="Utils\CommandLineOptions\CommandLineOptionsParserService.cs" />
-    <Compile Include="Utils\DateTimeHelper.cs" />
     <Compile Include="Utils\DoubleExtensions.cs" />
     <Compile Include="Utils\CommandLineOptions\ExecutionParameters.cs" />
     <Compile Include="Utils\CommandLineOptions\ICommandLineOptionsParserService.cs" />
     <Compile Include="Utils\CommandLineOptions\IExecutionParameters.cs" />
     <Compile Include="Utils\ReportUtil.cs" />
-    <Compile Include="Utils\ResourceHelper.cs" />
     <Compile Include="Utils\XmlExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

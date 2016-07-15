@@ -5,7 +5,6 @@ using System.Reflection;
 using RazorEngine.Configuration;
 using RazorEngine.Text;
 using ReportUnit.Model;
-using ReportUnit.Utils;
 
 namespace ReportUnit.Razor
 {
@@ -35,7 +34,7 @@ namespace ReportUnit.Razor
                 var fileName = Path
                     .GetFileNameWithoutExtension(templateName.Remove(0, nameSpace.Length))
                     .Replace('.', '/');
-                _razor.AddTemplate(fileName, ResourceHelper.GetStringResource(templateName));
+                _razor.AddTemplate(fileName, GetStringResource(templateName));
                 _razor.Compile(fileName);
             }
         }
@@ -45,6 +44,14 @@ namespace ReportUnit.Razor
         {
             var html = _razor.Run(model.TemplateName, typeof(TModel), model);
             File.WriteAllText(Path.Combine(_outputDirectory, model.FileName + ".html"), html);
+        }
+
+        public static string GetStringResource(string name)
+        {
+            using (var stream = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(name)))
+            {
+                return stream.ReadToEnd();
+            }
         }
     }
 }
