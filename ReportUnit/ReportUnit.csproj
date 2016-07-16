@@ -96,7 +96,15 @@
     <Compile Include="ReportEngines\IReportingEngineResolvingService.cs" />
     <Compile Include="ReportEngines\IReportingEngine.cs" />
     <Compile Include="ReportEngines\ReportingEngineResolvingService.cs" />
+    <Compile Include="Utils\CommandLineOptions\CommandLineOptionMode\DirectoryBasedOptionMode.cs" />
+    <Compile Include="Utils\CommandLineOptions\CommandLineOptionMode\FileBasedOptionMode.cs" />
+    <Compile Include="Utils\CommandLineOptions\CommandLineOptionMode\ICommandLineOptionMode.cs" />
+    <Compile Include="Utils\CommandLineOptions\CommandLineOptionMode\InputDirectoryOptionMode.cs" />
+    <Compile Include="Utils\CommandLineOptions\CommandLineOptionMode\InputDirectoryOutputDirectoryOptionMode.cs" />
+    <Compile Include="Utils\CommandLineOptions\CommandLineOptionMode\InputFileOptionMode.cs" />
+    <Compile Include="Utils\CommandLineOptions\CommandLineOptionMode\InputFileOutputDirectoryOptionMode.cs" />
     <Compile Include="Utils\CommandLineOptions\CommandLineOptions.cs" />
+    <Compile Include="Utils\CommandLineOptions\HelpTextExtensions.cs" />
     <Compile Include="Utils\ResourceHelper.cs" />
     <Compile Include="Workers\CreateReport\CreateReportWorker.cs" />
     <Compile Include="DependencyInjection\DI.cs" />

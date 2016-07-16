@@ -1,17 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CommandLine;
 using CommandLine.Text;
+using ReportUnit.Utils.CommandLineOptions.CommandLineOptionMode;
 
 namespace ReportUnit.Utils.CommandLineOptions
 {
-    internal class CommandLineOptions
+    public class CommandLineOptions
     {
-        /// <summary>
-        /// ReportUnit usage
-        /// </summary>
-        private const string Usage = "\n[INFO] Usage 1:  ReportUnit \"path-to-folder\" <options>" 
-                                   + "\n[INFO] Usage 2:  ReportUnit \"input-folder\" \"output-folder\" <options>";
-
         [ValueList(typeof(List<string>), MaximumElements = 2)]
         public List<string> InputOutput { get; set; }
 
@@ -19,10 +15,30 @@ namespace ReportUnit.Utils.CommandLineOptions
         public string Engine { get; set; }
 
         [HelpOption]
-        public string GetUsage()
+        public string GetUsage(ICommandLineOptionMode[] availableModes)
         {
-            var originalAutoHelpText = HelpText.AutoBuild(this, current => HelpText.DefaultParsingErrorsHandler(this, current)).ToString();
-            return originalAutoHelpText + Usage;
+            var helpText = new HelpText
+            {
+                AddDashesToOption = true
+            };
+            var usageLines = availableModes.Select(mode => $"ReportUnit {mode.Usage()} <options>");
+            helpText.AddPreOptionsLines(usageLines);
+            helpText.AddOptions(this);
+            return helpText;
+        }
+
+        public string GetInput()
+        {
+            return InputOutput.Count > 0 
+                ? InputOutput[0] 
+                : null;
+        }
+
+        public string GetOutput()
+        {
+            return InputOutput.Count > 1
+                ? InputOutput[1]
+                : null;
         }
     }
 }

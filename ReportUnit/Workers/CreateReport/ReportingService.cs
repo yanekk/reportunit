@@ -57,11 +57,9 @@ namespace ReportUnit.Workers.CreateReport
         private ITestFileParser GetTestFileParser(string inputFile)
         {
             var parser = _parserResolvingService.FindParserForFile(inputFile);
-
-            if (parser == null)
-                _logger.Info("The file " + inputFile + " doesn't contain test results");
-            else
-                _logger.Info(string.Format("The file {0} contain {1} test results", inputFile, parser.TypeName));
+            _logger.Info(parser == null
+                ? $"The file {inputFile} doesn't contain test results"
+                : $"The file {inputFile} contain {parser.TypeName} test results");
             return parser;
         }
     }

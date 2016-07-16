@@ -1,34 +1,26 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace ReportUnit.Utils.CommandLineOptions
 {
     public class ExecutionParameters : IExecutionParameters
     {
-        private readonly List<FileInfo> _inputFiles = new List<FileInfo>();
-        private readonly DirectoryInfo _outputDirectory;
-        private readonly string _engineName;
-
-        public ExecutionParameters(FileInfo[] inputFiles, DirectoryInfo outputDirectory, string engineName)
-        {
-            _inputFiles.AddRange(inputFiles);
-            _outputDirectory = outputDirectory;
-            _engineName = engineName;
-        }
+        public FileInfo[] InputFiles;
+        public DirectoryInfo OutputDirectory;
+        public string EngineName { get; set; }
 
         public FileInfo[] GetInputFiles()
         {
-            return _inputFiles.ToArray();
+            return InputFiles;
         }
 
         public DirectoryInfo GetOutputDirectory()
         {
-            return _outputDirectory;
+            return OutputDirectory;
         }
 
         public string GetEngineName()
         {
-            return _engineName;
+            return EngineName;
         }
     }
 }

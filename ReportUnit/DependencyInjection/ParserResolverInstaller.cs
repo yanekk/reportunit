@@ -6,6 +6,7 @@ using ReportUnit.Logging;
 using ReportUnit.Parsers;
 using ReportUnit.ReportEngines;
 using ReportUnit.Utils.CommandLineOptions;
+using ReportUnit.Utils.CommandLineOptions.CommandLineOptionMode;
 using ReportUnit.Workers.CreateReport;
 
 namespace ReportUnit.DependencyInjection
@@ -21,6 +22,8 @@ namespace ReportUnit.DependencyInjection
 
             container.Register(Component.For<IReportingEngineResolvingService>().ImplementedBy<ReportingEngineResolvingService>());
             container.Register(Classes.FromThisAssembly().BasedOn<IReportingEngine>().WithServiceFromInterface());
+
+            container.Register(Classes.FromThisAssembly().BasedOn<ICommandLineOptionMode>().WithServiceFromInterface());
 
             container.Register(Component.For<IReportingService>().ImplementedBy<ReportingService>());
             container.Register(Component.For<ICreateReportWorker>().ImplementedBy<CreateReportWorker>());
