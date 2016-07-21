@@ -115,5 +115,7 @@ namespace ReportUnit.Model
                 AddCategory(category);
             }
         }
+
+        public string XmlFileContents { get; set; }
     }
 }

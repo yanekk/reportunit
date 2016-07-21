@@ -23,6 +23,8 @@ namespace ReportUnit.ReportEngines.Html
             {
                 report.SideNavLinks = summary.SideNavLinks;
                 ArtifactsCopier.CopyTo(report, outputDirectory);
+                if(report.XmlFileContents != null)
+                    ArtifactsCopier.SaveOriginalXmlContents(report, outputDirectory);
                 templateService.Save(report);
             }
             var assetsNamespace = engineNamespace + ".Assets";

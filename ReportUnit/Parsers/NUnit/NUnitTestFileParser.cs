@@ -17,6 +17,7 @@ namespace ReportUnit.Parsers.NUnit
         {
             var doc = XDocument.Load(resultsFile);
             var report = NUnitTestReportParser.Parse(doc);
+            report.XmlFileContents = doc.ToString(SaveOptions.None);
 
             report.RunInfo = CreateRunInfo(doc, report, resultsFile);
             report.FileName = Path.GetFileNameWithoutExtension(resultsFile);

@@ -11,6 +11,11 @@
             </li>
         </ul>
         <ul class='right nav-right'>
+            @if(Model.XmlFileContents != null) {
+                <li class="nav-item">
+                    <a href="./Artifacts/@(Model.FileName)/@(Model.FileName).xml">Get XML</a>
+                </li>
+            }
             <li class='nav-item'>
                 <a class='modal-trigger waves-effect waves-light run-info-icon tooltipped' data-position='bottom' data-tooltip='Run Info' href='#modal1'><i class='mdi-action-info-outline'></i></a>
             </li>
