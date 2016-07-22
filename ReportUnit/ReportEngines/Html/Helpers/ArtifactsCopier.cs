@@ -9,14 +9,14 @@ namespace ReportUnit.ReportEngines.Html.Helpers
     {
         public static void CopyTo(Report report, DirectoryInfo outputDirectory)
         {
-            var artifactBaseDirectory = GetArtifactsDirectoryFor(report, outputDirectory);
+            var artifactBaseDirectory = GetArtifactsDirectoryFor(report);
             foreach (var test in GetTestsFrom(report))
             {
-                var artifactPath = Path.Combine(artifactBaseDirectory.FullName, test.ArtifactSet.DirectoryName);
+                var artifactPath = Path.Combine(artifactBaseDirectory, test.ArtifactSet.DirectoryName);
                 Directory.CreateDirectory(Path.Combine(outputDirectory.FullName, artifactPath));
                 foreach (var artifact in test.ArtifactSet.Artifacts)
                 {
-                    artifact.FilePath = Path.Combine(artifactPath, artifact.FileName);
+                    artifact.FilePath = Path.Combine(artifactPath, artifact.FileName).Replace("\\", "/");
                     File.Copy(
                         Path.Combine(test.ArtifactSet.BasePath, artifact.FileName),
                         Path.Combine(outputDirectory.FullName, artifact.FilePath), true);
@@ -26,9 +26,9 @@ namespace ReportUnit.ReportEngines.Html.Helpers
 
         public static void SaveOriginalXmlContents(Report report, DirectoryInfo outputDirectory)
         {
-            var artifactBaseDirectory = GetArtifactsDirectoryFor(report, outputDirectory);
+            var artifactBaseDirectory = GetArtifactsDirectoryFor(report);
             var inputXmlFileContents = report.XmlFileContents;
-            var inputXmlFilePath = Path.Combine(artifactBaseDirectory.FullName, $"{report.FileName}.xml");
+            var inputXmlFilePath = Path.Combine(outputDirectory.FullName, artifactBaseDirectory, $"{report.FileName}.xml");
             using (var inputFile = File.CreateText(inputXmlFilePath))
             {
                 inputFile.Write(inputXmlFileContents);
@@ -42,10 +42,9 @@ namespace ReportUnit.ReportEngines.Html.Helpers
                 .Where(t => t.HasArtifacts());
         }
 
-        private static DirectoryInfo GetArtifactsDirectoryFor(Report report, DirectoryInfo outputDirectory)
+        private static string GetArtifactsDirectoryFor(Report report)
         {
-            var artifactBaseDirectory = Path.Combine("Artifacts\\", report.FileName);
-            return Directory.CreateDirectory(Path.Combine(outputDirectory.FullName, artifactBaseDirectory));
+            return Path.Combine(".\\Artifacts\\", report.FileName);
         }
     }
 }
