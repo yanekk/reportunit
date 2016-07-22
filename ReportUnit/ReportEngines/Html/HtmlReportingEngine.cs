@@ -19,12 +19,13 @@ namespace ReportUnit.ReportEngines.Html
                 templateService.Save(summary);
             }
 
+            var artifactsManager = new ArtifactsManager(outputDirectory);
             foreach (var report in summary.Reports)
             {
                 report.SideNavLinks = summary.SideNavLinks;
-                ArtifactsCopier.CopyTo(report, outputDirectory);
+                artifactsManager.CopyReportedArtifacts(report);
                 if(report.XmlFileContents != null)
-                    ArtifactsCopier.SaveOriginalXmlContents(report, outputDirectory);
+                    artifactsManager.SaveOriginalXmlContents(report);
                 templateService.Save(report);
             }
             var assetsNamespace = engineNamespace + ".Assets";
