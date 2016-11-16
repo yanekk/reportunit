@@ -56,20 +56,23 @@ namespace ReportUnit.Parsers.NUnit
             if (doc.Root.Element("environment") == null)
                 return result;
 
-            var runInfo = new RunInfo();
-            runInfo.TestParser = TypeName;
+            var runInfo = new RunInfo
+            {
+                TestParser = TypeName
+            };
 
-            XElement env = doc.Descendants("environment").First();
+            var env = doc.Descendants("environment").First();
             runInfo.Info.Add("Test Results File", resultsFile);
+
             if (env.Attribute("nunit-version") != null)
-                runInfo.Info.Add("NUnit Version", env.Attribute("nunit-version").Value);
+                runInfo.Info.Add("NUnit Version", env.GetAttributeValueOrDefault("nunit-version"));
             runInfo.Info.Add("Assembly Name", report.AssemblyName);
-            runInfo.Info.Add("OS Version", env.Attribute("os-version").Value);
-            runInfo.Info.Add("Platform", env.Attribute("platform").Value);
-            runInfo.Info.Add("CLR Version", env.Attribute("clr-version").Value);
-            runInfo.Info.Add("Machine Name", env.Attribute("machine-name").Value);
-            runInfo.Info.Add("User", env.Attribute("user").Value);
-            runInfo.Info.Add("User Domain", env.Attribute("user-domain").Value);
+            runInfo.Info.Add("OS Version", env.GetAttributeValueOrDefault("os-version"));
+            runInfo.Info.Add("Platform", env.GetAttributeValueOrDefault("platform"));
+            runInfo.Info.Add("CLR Version", env.GetAttributeValueOrDefault("clr-version"));
+            runInfo.Info.Add("Machine Name", env.GetAttributeValueOrDefault("machine-name"));
+            runInfo.Info.Add("User", env.GetAttributeValueOrDefault("user"));
+            runInfo.Info.Add("User Domain", env.GetAttributeValueOrDefault("user-domain"));
 
             return runInfo.Info;
         }

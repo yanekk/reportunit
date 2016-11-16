@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Xml;
 
 namespace ReportUnit.Parsers
@@ -12,7 +13,14 @@ namespace ReportUnit.Parsers
         {
             var extension = Path.GetExtension(filePath).Substring(1);
             var document = new XmlDocument();
-            document.Load(filePath);
+            try
+            {
+                document.Load(filePath);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
             return IsExtensionMatching(extension) && IsHeaderCompatibile(document);
         }
 
